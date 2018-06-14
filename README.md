@@ -4,7 +4,7 @@ Hard hat detection system by QT5
 
 ## 界面预览
 
-![](./preview/HarthatSystem.png)
+![](./preview/HardhatSystem.png)
 
 ## 开发计划
 
