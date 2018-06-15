@@ -45,13 +45,14 @@ Item {
         y: 278
         width: 120
         height: 40
-        text: "实时视频分析"
+        text: "视频文件分析"
         anchors.verticalCenterOffset: 70
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
         onClicked: {
+            mainPageContains.showPage( "视频文件分析", "qrc:/Video/Video.qml" );
             // welcomeManage.openGitHubLink();
         }
     }
@@ -61,7 +62,7 @@ Item {
         y: 278
         width: 120
         height: 40
-        text: "视频文件分析"
+        text: "实时视频分析"
         anchors.verticalCenterOffset: 141
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter

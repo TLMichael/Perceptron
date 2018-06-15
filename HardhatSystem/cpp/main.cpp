@@ -13,6 +13,7 @@
 
 // Group import
 #include <WelcomeGroup>
+#include <VideoGroup>
 
 
 int main(int argc, char *argv[])
@@ -28,6 +29,7 @@ int main(int argc, char *argv[])
 
     // Group initialize
     WELCOMEGROUP_INITIALIZA;
+    VIDEOGROUP_INITIALIZA;
 
     engine.rootContext()->setContextProperty("JQToolsManage", &JQToolsManage);
 

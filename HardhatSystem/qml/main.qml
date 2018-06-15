@@ -29,14 +29,14 @@ ApplicationWindow {
                             children: [ ]
                         },
                         {
-                            bookmarkName: "实时视频分析",
-                            titleName: "实时视频分析",
-                            qrcLocation: "",
+                            bookmarkName: "视频文件分析",
+                            titleName: "视频文件分析",
+                            qrcLocation: "qrc:/Video/Video.qml",
                             children: [ ]
                         },
                         {
-                            bookmarkName: "视频文件分析",
-                            titleName: "视频文件分析",
+                            bookmarkName: "实时视频分析",
+                            titleName: "实时视频分析",
                             qrcLocation: "",
                             children:
                                 [ ]
