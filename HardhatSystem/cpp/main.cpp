@@ -14,6 +14,7 @@
 // Group import
 #include <WelcomeGroup>
 #include <VideoGroup>
+#include <CameraGroup>
 
 
 int main(int argc, char *argv[])
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
     // Group initialize
     WELCOMEGROUP_INITIALIZA;
     VIDEOGROUP_INITIALIZA;
+    CAMERA_INITIALIZA;
 
     engine.rootContext()->setContextProperty("JQToolsManage", &JQToolsManage);
 

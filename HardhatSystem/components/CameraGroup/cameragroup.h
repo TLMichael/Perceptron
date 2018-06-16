@@ -1,0 +1,11 @@
+﻿
+#ifndef CAMERAGROUP_CAMERAGROUP_H_
+#define CAMERAGROUP_CAMERAGROUP_H_
+
+// CameraGroup lib import
+#include "camera.h"
+
+#define CAMERAGROUP_INITIALIZA \
+    CAMERA_INITIALIZA;
+
+#endif//CAMERAGROUP_CAMERAGROUP_H_

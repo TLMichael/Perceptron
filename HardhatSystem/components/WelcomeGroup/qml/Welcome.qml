@@ -69,6 +69,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
 
         onClicked: {
+            mainPageContains.showPage( "实时视频分析", "qrc:/Camera/Camera.qml" );
             // welcomeManage.openLatestVersionDownloadLink();
         }
     }

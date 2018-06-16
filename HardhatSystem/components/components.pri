@@ -14,3 +14,4 @@
 
 include( $$PWD/WelcomeGroup/WelcomeGroup.pri )
 include( $$PWD/VideoGroup/VideoGroup.pri )
+include( $$PWD/CameraGroup/CameraGroup.pri )

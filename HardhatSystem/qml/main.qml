@@ -37,7 +37,7 @@ ApplicationWindow {
                         {
                             bookmarkName: "实时视频分析",
                             titleName: "实时视频分析",
-                            qrcLocation: "",
+                            qrcLocation: "qrc:/Camera/Camera.qml",
                             children:
                                 [ ]
                         },
