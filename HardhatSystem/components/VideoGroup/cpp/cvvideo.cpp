@@ -30,8 +30,8 @@ void CVVideo::changeParent(QQuickItem* parent)
 
 void CVVideo::videoControl()
 {
-//    qDebug() << "frameCount: " << frameCount;
-//    qDebug() << "frameNow:   " << frameNow;
+    //    qDebug() << "frameCount: " << frameCount;
+    //    qDebug() << "frameNow:   " << frameNow;
     if(frameCount == frameNow && frameCount > 0)
     {
         frameNow = 0;

@@ -63,8 +63,6 @@ Item {
         x: 8
         y: 526
         width: 200
-        anchors.left: imageSizeSetButton.right
-        model: camera.deviceList
     }
 
 }

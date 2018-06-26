@@ -1,4 +1,4 @@
-QT += quick qml widgets concurrent avwidgets multimedia widgets
+QT += quick qml widgets concurrent multimedia sql
 CONFIG += c++11
 
 
@@ -28,10 +28,12 @@ HEADERS += \
     $$PWD/cpp/yolo_v2_class.hpp \
     $$PWD/cpp/utils.h \
     $$PWD/cpp/bettervideocapture.hpp \
+    cpp/dataface.h
 
 SOURCES += \
     $$PWD/cpp/main.cpp \
-    cpp/utils.cpp
+    cpp/utils.cpp \
+    cpp/dataface.cpp
 
 RESOURCES += \
     $$PWD/qml/qml.qrc
