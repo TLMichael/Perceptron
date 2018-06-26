@@ -4,6 +4,7 @@ import QtGraphicalEffects 1.0
 import "qrc:/MaterialUI/"
 import "qrc:/MaterialUI/Interface/"
 
+
 ApplicationWindow {
     id: applicationWindow
     title: "Hard Hat Detection System"

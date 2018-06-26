@@ -16,9 +16,13 @@
 #include <VideoGroup>
 #include <CameraGroup>
 
+#include <QtAV>
+#include <QtAVWidgets>
+
 
 int main(int argc, char *argv[])
 {
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -28,10 +32,11 @@ int main(int argc, char *argv[])
 
     JQToolsManage.setQmlApplicationEngine(&engine);
 
+
     // Group initialize
     WELCOMEGROUP_INITIALIZA;
     VIDEOGROUP_INITIALIZA;
-    CAMERA_INITIALIZA;
+    CAMERAGROUP_INITIALIZA;
 
     engine.rootContext()->setContextProperty("JQToolsManage", &JQToolsManage);
 

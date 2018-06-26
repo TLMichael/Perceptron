@@ -5,10 +5,14 @@ INCLUDEPATH *= \
 
 HEADERS *= \
     $$PWD/cpp/video.h \
-    $$PWD/videogroup.h
+    $$PWD/videogroup.h \
+    $$PWD/cpp/videothread.h \
+    $$PWD/cpp/cvvideo.h
 
 SOURCES *= \
-    $$PWD/cpp/video.cpp
+    $$PWD/cpp/video.cpp \
+    $$PWD/cpp/videothread.cpp \
+    $$PWD/cpp/cvvideo.cpp
 
 RESOURCES *= \
     $$PWD/qml/Video.qrc

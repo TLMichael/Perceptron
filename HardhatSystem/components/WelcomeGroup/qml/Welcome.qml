@@ -19,8 +19,8 @@ import Welcome 1.0
 
 Item {
     id: welcome
-    width: 620
-    height: 540
+    width: 820
+    height: 590
 
     WelcomeManage {
         id: welcomeManage

@@ -4,8 +4,10 @@
 
 // CameraGroup lib import
 #include "camera.h"
+#include "cvcamera.h"
 
 #define CAMERAGROUP_INITIALIZA \
-    CAMERA_INITIALIZA;
+    CAMERA_INITIALIZA; \
+    CVCAMERA_INITIALIZA;
 
 #endif//CAMERAGROUP_CAMERAGROUP_H_

@@ -5,32 +5,66 @@ import QtQuick.Dialogs 1.0
 import "qrc:/MaterialUI/Interface/"
 import Camera 1.0
 
+import com.nuaa.CVCamera 1.0
+
 Item {
     id: video
-    width: 620
-    height: 540
+    width: 820
+    height: 590
 
     CameraManage {
         id: cameraManage
-
     }
 
-    Camera {
-        id: camera
-        imageCapture {
-            onImageCaptured: {
-                photoPreview.source = preview  // Show the preview in an Image
-            }
+    CVCamera {
+        id: mediaPlayer
+        device: deviceBox.currentIndex
+    }
+
+    Rectangle {
+        id: playerRect
+        x: 0
+        y: 0
+        width: parent.width
+        height:520
+        color: "black"
+
+        VideoOutput {
+            id: out
+            x: 0
+            y: 0
+            width: parent.width
+            height: parent.height
+
+            source: mediaPlayer
         }
     }
 
-    Image {
-        id: photoPreview
+    MaterialButton {
+        id: controlbutton
+        x: 692
+        y: 542
+        width: 120
+        height: 40
+        text: "暂停"
+
+        onClicked: {
+            if(text === "暂停")
+                text = "继续"
+            else
+                text = "暂停"
+            mediaPlayer.videoControl()
+        }
     }
 
-    VideoOutput {
-        id: out
-        anchors.fill: parent
-        source: camera
+
+    ComboBox {
+        id: deviceBox
+        x: 8
+        y: 526
+        width: 200
+        anchors.left: imageSizeSetButton.right
+        model: camera.deviceList
     }
+
 }

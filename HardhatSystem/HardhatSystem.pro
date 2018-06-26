@@ -1,4 +1,4 @@
-QT += quick qml widgets concurrent
+QT += quick qml widgets concurrent avwidgets multimedia widgets
 CONFIG += c++11
 
 
@@ -17,17 +17,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCLUDEPATH *= \
-    $$PWD/cpp/
+INCLUDEPATH += \
+    $$PWD/cpp/ \
+    /usr/local/include \
+    /usr/local/include/opencv \
+    /usr/local/include/opencv2
 
-HEADERS *= \
-    $$PWD/cpp/jqtools_manage.hpp
+HEADERS += \
+    $$PWD/cpp/jqtools_manage.hpp \
+    $$PWD/cpp/yolo_v2_class.hpp \
+    $$PWD/cpp/utils.h \
+    $$PWD/cpp/bettervideocapture.hpp \
 
 SOURCES += \
-    $$PWD/cpp/main.cpp
+    $$PWD/cpp/main.cpp \
+    cpp/utils.cpp
 
 RESOURCES += \
     $$PWD/qml/qml.qrc
+
+LIBS += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
+LIBS += -L$$PWD/cpp -ldarknet
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
