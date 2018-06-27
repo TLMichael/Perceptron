@@ -117,3 +117,93 @@ bool DataFace::insertDetection(QString path, QVariantList qFrameNow, QVariantLis
 
     return true;
 }
+
+int DataFace::searchVideo(QList<QString> &pathL, QList<float> &fpsL, QList<int> &frameCountL, QList<QDateTime> &saveTimeL)
+{
+    QSqlQuery tmpQuery;
+    if(!tmpQuery.exec("select videoID,path,fps,frameCount,DATE_FORMAT(saveTime, '%Y-%c-%e %H:%i:%s.%f') as saveTime from video"))
+    {
+        qDebug() << "查询video表失败！";
+        return -1;
+    }
+
+    int recordNum = tmpQuery.size();
+    if(recordNum <= 0)
+    {
+        qDebug() << "视频记录为空";
+        return recordNum;
+    }
+
+    while(tmpQuery.next())
+    {
+        QString path = tmpQuery.value(1).toString();
+        float fps = tmpQuery.value(2).toFloat();
+        int frameCount = tmpQuery.value(3).toInt();
+        QString saveTimeString = tmpQuery.value(4).toString();
+        QDateTime saveTime = QDateTime::fromString(saveTimeString, "yyyy-MM-dd hh:mm:ss.zzz000");
+
+        pathL << path;
+        fpsL << fps;
+        frameCountL << frameCount;
+        saveTimeL << saveTime;
+    }
+    return recordNum;
+}
+
+int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &boxIDL, QList<int> &objIDL, QList<int> &xL, QList<int> &yL, QList<int> &wL, QList<int> &hL)
+{
+    QSqlQuery tmpQuery;
+
+    if(!tmpQuery.exec("select videoID from video where path='" + path + "'"))
+    {
+        qDebug() << "查询video表失败！";
+        return -1;
+    }
+
+    // qDebug() << "查询到记录个数： " << tmpQuery.size();
+    int videoID;
+    if(tmpQuery.next())
+    {
+        videoID = tmpQuery.value(0).toInt();
+        qDebug() << "get videoID: " << videoID;
+    }
+    else
+    {
+        qDebug() << "查询video表，path不存在！";
+        return -1;
+    }
+
+    if(!tmpQuery.exec("select * from detection where videoID='" + QString::number(videoID, 10) + "'"))
+    {
+        qDebug() << "查询detection表失败！";
+        return -1;
+    }
+
+    int recordNum = tmpQuery.size();
+    if(recordNum <= 0)
+    {
+        qDebug() << "视频记录为空";
+        return recordNum;
+    }
+
+    while(tmpQuery.next())
+    {
+        int frameNow = tmpQuery.value(1).toInt();
+        int boxID = tmpQuery.value(2).toInt();
+        int objID = tmpQuery.value(3).toInt();
+        int x = tmpQuery.value(4).toInt();
+        int y = tmpQuery.value(5).toInt();
+        int w = tmpQuery.value(6).toInt();
+        int h = tmpQuery.value(7).toInt();
+
+        frameNowL.append(frameNow);
+        boxIDL.append(boxID);
+        objIDL.append(objID);
+        xL.append(x);
+        yL.append(y);
+        wL.append(w);
+        hL.append(h);
+    }
+
+    return recordNum;
+}
