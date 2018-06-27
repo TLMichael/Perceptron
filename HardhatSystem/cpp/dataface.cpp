@@ -8,6 +8,7 @@ DataFace::DataFace()
     db.setUserName("root");
     db.setPassword("taolue");
     db.setDatabaseName(dbName);
+    open();
 }
 
 bool DataFace::open()

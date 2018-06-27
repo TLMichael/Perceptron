@@ -2,9 +2,12 @@
 #define UTILS_H
 
 #include "yolo_v2_class.hpp"
+#include "dataface.h"
 
 extern Detector *detector;
 
+static cv::Scalar obj_id_to_color(int obj_id);
 
+extern DataFace *df;
 
 #endif // UTILS_H

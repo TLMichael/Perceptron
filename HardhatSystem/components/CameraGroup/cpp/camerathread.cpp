@@ -37,21 +37,14 @@ void CameraTask::doWork()
     int x = 80;
     int y = 150;
     cv::RNG rng(time(0));
-    QMap< unsigned int, cv::Scalar > colors;
-    for(int i=0; i < 80; i++)
-    {
-        cv::Scalar color = cv::Scalar(rng.uniform(0,255),rng.uniform(0,255),rng.uniform(0,255));
-        colors.insert(i, color);
-    }
-
 
     while(running && videoFrame != NULL && camera != NULL)
     {
-        if(x < 150)
+        if(x < 100)
             x += 14;
         else
             x = 80;
-        if(y < 250)
+        if(y < 200)
             y += 14;
         else
             y = 150;
@@ -77,7 +70,8 @@ void CameraTask::doWork()
                 qDebug() << "[" << i << "] " << results[i].x << " " << results[i].y << " " << results[i].w << " " << results[i].h;
                 cv::Rect rec(results[i].x, results[i].y, results[i].w, results[i].h);
 
-                cv::rectangle(tempMat, rec, colors.find(results[i].obj_id).value(), 4);
+                // cv::rectangle(tempMat, rec, colors.find(results[i].obj_id).value(), 4);
+                cv::rectangle(tempMat, rec, obj_id_to_color(results[i].obj_id), 4);
             }
 
             cv::putText(tempMat, "FUCK THE WORLD", cv::Point(x, y), cv::FONT_HERSHEY_SIMPLEX, 1.6, cv::Scalar(rng.uniform(0,255),rng.uniform(0,255),rng.uniform(0,255)), 8);

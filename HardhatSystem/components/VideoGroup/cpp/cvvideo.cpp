@@ -139,6 +139,7 @@ void CVVideo::update()
     qDebug() << "w: " << w << " h: " << h;
     size = QSize(w, h);
     frameCount = precap.getProperty(CV_CAP_PROP_FRAME_COUNT);
+    fps = precap.getProperty(CV_CAP_PROP_FPS);
     frameNow = 0;
 
 
@@ -165,8 +166,8 @@ void CVVideo::update()
         allocateVideoFrame();
 
     video = new BetterVideoCapture();
-    thread = new VideoThread(video, videoFrame, cvImageBuf, size.width(), size.height());
-    connect(thread,SIGNAL(imageReady()), this, SLOT(imageReceived()));
+    thread = new VideoThread(&results, video, videoFrame, cvImageBuf, size.width(), size.height());
+    connect(thread, SIGNAL(imageReady()), this, SLOT(imageReceived()));
 
     //Open newly created device
     try{
@@ -199,7 +200,29 @@ void CVVideo::imageReceived()
     {
         if(!videoSurface->present(*videoFrame))
             DPRINT("Could not present QVideoFrame to QAbstractVideoSurface, error: %d",videoSurface->error());
+
         frameNow++;
+        qDebug() << "frameNow: " << frameNow << "/" << frameCount;
+        // QVariantList qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb;
+        for(size_t i = 0; i < results.size(); i++)
+        {
+            qFrameNow << frameNow;
+            qBoxID << (int)i;
+            qObjID << results[i].obj_id;
+            qX << results[i].x;
+            qY << results[i].y;
+            qW << results[i].w;
+            qH << results[i].h;
+            qProb << results[i].prob;
+        }
+
+        if(frameNow == frameCount)
+        {
+            qDebug() << "Save detection results to database, size: " << qFrameNow.size();
+            df->insertVideo(fileUrl, fps, frameCount);
+            bool res = df->insertDetection(fileUrl, qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb);
+            qDebug() << "Save detection status: " << res;
+        }
         emit frameNowChanged();
     }
     //Update exported CV image

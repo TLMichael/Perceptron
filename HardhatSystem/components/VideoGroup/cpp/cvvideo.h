@@ -19,6 +19,7 @@
 #include<opencv2/highgui/highgui.hpp>
 
 #include "videothread.h"
+#include "utils.h"
 
 #define CVVIDEO_INITIALIZA                                               \
 {                                                                       \
@@ -76,8 +77,12 @@ private:
     QString fileUrl = NULL;
 
     QSize size;
+    double fps;
     int frameCount = 0;
     int frameNow;
+    std::vector<bbox_t> results;
+
+    QVariantList qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb;  // Database variant
 
 
     BetterVideoCapture* video = NULL;                      ///< The camera object
