@@ -232,6 +232,7 @@ ApplicationWindow {
 
                             onClicked: {
                                 mainPageContains.showPage( titleName, itemQrcLocation );
+
                             }
                         }
 

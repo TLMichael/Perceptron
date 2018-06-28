@@ -4,10 +4,10 @@
 // JQToolsLibrary import
 #include <JQToolsLibrary>
 
-#define VIDEO_INITIALIZA                                               \
+#define SEARCH_INITIALIZA                                               \
 {                                                                       \
     qmlRegisterType<Search::Manage>("Search", 1, 0, "SearchManage"); \
-}
+    }
 
 namespace Search
 {
@@ -17,10 +17,14 @@ class Manage: public AbstractTool
     Q_OBJECT
     Q_DISABLE_COPY(Manage)
 
+//    Q_PROPERTY(QString source READ source WRITE setSource)
+
 public:
     Manage() = default;
-
     ~Manage() = default;
+
+//    QString source() const;
+//    void setSouce(const QString &);
 
 public slots:
 

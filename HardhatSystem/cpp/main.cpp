@@ -16,6 +16,7 @@
 #include <WelcomeGroup>
 #include <VideoGroup>
 #include <CameraGroup>
+#include <SearchGroup>
 
 #include "dataface.h"
 
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
     WELCOMEGROUP_INITIALIZA;
     VIDEOGROUP_INITIALIZA;
     CAMERAGROUP_INITIALIZA;
+    SEARCHGROUP_INITIALIZA;
 
     engine.rootContext()->setContextProperty("JQToolsManage", &JQToolsManage);
 

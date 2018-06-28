@@ -43,7 +43,7 @@ Item {
     MaterialButton {
         id: controlbutton
         x: 692
-        y: 542
+        y: 532
         width: 120
         height: 40
         text: "暂停"
