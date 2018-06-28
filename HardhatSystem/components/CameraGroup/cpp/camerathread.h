@@ -14,7 +14,8 @@
 
 #include<vector>
 
-#include"bettervideocapture.hpp"
+#include "bettervideocapture.hpp"
+#include "utils.h"
 
 
 #define DPRINT(...) while(0);
@@ -37,7 +38,7 @@ public:
      * @param width Width of the camera image
      * @param height Height of the camera image
      */
-    CameraTask(BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
+    CameraTask(std::vector<bbox_t> *results, BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
 
     /**
          * @brief Destroys this camera access task, does not touch the camera or the videoFrame
@@ -57,6 +58,8 @@ private:
     bool running = false;                       ///< Whether the worker thread is running
     QVideoFrame* videoFrame;                    ///< Place to draw camera image to
     unsigned char* cvImageBuf;                  ///< Place to export camera image to
+    \
+    std::vector<bbox_t> *results;
 
 public slots:
     /**
@@ -93,7 +96,7 @@ public:
      * @param width Width of the camera image
      * @param height Height of the camera image
      */
-    CameraThread(BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
+    CameraThread(std::vector<bbox_t> *results, BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
 
     /**
      * @brief Destroys this camera controller

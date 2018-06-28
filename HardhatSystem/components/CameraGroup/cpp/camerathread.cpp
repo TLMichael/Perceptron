@@ -3,7 +3,7 @@
 
 
 
-CameraTask::CameraTask(BetterVideoCapture *camera, QVideoFrame *videoFrame, unsigned char *cvImageBuf, int width, int height)
+CameraTask::CameraTask(std::vector<bbox_t> *results, BetterVideoCapture *camera, QVideoFrame *videoFrame, unsigned char *cvImageBuf, int width, int height)
 {
     this->running = true;
     this->camera = camera;
@@ -11,6 +11,7 @@ CameraTask::CameraTask(BetterVideoCapture *camera, QVideoFrame *videoFrame, unsi
     this->cvImageBuf = cvImageBuf;
     this->width = width;
     this->height = height;
+    this->results = results;
 
 }
 
@@ -61,20 +62,21 @@ void CameraTask::doWork()
 
             std::shared_ptr<image_t> img = detector->mat_to_image(tempMat);
             image_t *iii = img.get();
-            std::vector<bbox_t> results;
-            results = detector->detect(*iii);
+            std::vector<bbox_t> tmpres = detector->detect(*iii);
+            results->assign(tmpres.begin(), tmpres.end());
 
-            qDebug() << "Person numbers: " << results.size();
-            for(size_t i = 0; i < results.size(); i++)
+            qDebug() << "Person numbers: " << results->size();
+            for(size_t i = 0; i < results->size(); i++)
             {
-                qDebug() << "[" << i << "] " << results[i].x << " " << results[i].y << " " << results[i].w << " " << results[i].h;
-                cv::Rect rec(results[i].x, results[i].y, results[i].w, results[i].h);
+                // qDebug() << "[" << i << "] " << results[i].x << " " << results[i].y << " " << results[i].w << " " << results[i].h;
+                cv::Rect rec((*results)[i].x, (*results)[i].y, (*results)[i].w, (*results)[i].h);
 
                 // cv::rectangle(tempMat, rec, colors.find(results[i].obj_id).value(), 4);
-                cv::rectangle(tempMat, rec, obj_id_to_color(results[i].obj_id), 4);
+                cv::rectangle(tempMat, rec, obj_id_to_color((*results)[i].obj_id), 4);
             }
 
             cv::putText(tempMat, "FUCK THE WORLD", cv::Point(x, y), cv::FONT_HERSHEY_SIMPLEX, 1.6, cv::Scalar(rng.uniform(0,255),rng.uniform(0,255),rng.uniform(0,255)), 8);
+            videoWriter->write(tempMat);
 
             cv::cvtColor(tempMat, screenImage, cv::COLOR_RGB2RGBA);
         }
@@ -91,9 +93,9 @@ void CameraTask::doWork()
 }
 
 
-CameraThread::CameraThread(BetterVideoCapture *camera, QVideoFrame *videoFrame, unsigned char *cvImageBuf, int width, int height)
+CameraThread::CameraThread(std::vector<bbox_t> *results, BetterVideoCapture *camera, QVideoFrame *videoFrame, unsigned char *cvImageBuf, int width, int height)
 {
-    task = new CameraTask(camera,videoFrame,cvImageBuf,width,height);
+    task = new CameraTask(results, camera,videoFrame,cvImageBuf,width,height);
     task->moveToThread(&workerThread);
     connect(&workerThread, SIGNAL(started()), task, SLOT(doWork()));
     connect(task, SIGNAL(imageReady()), this, SIGNAL(imageReady()));

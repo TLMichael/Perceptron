@@ -22,6 +22,11 @@ public:
         return capture->open(device);
     }
 
+    void close()
+    {
+        return capture->release();
+    }
+
     bool open(QString file)
     {
         return capture->open(file.toStdString());

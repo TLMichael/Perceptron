@@ -38,6 +38,7 @@ void CVVideo::videoControl()
         thread->stop();
 
         video->setProperty(CV_CAP_PROP_POS_AVI_RATIO, 0);
+        clearQVariant();
         isrunning = true;
         thread->start();
         return;
@@ -129,6 +130,18 @@ void CVVideo::allocateVideoFrame()
     videoFrame = new QVideoFrame(size.width() * size.height() * 4, size, size.width() * 4, VIDEO_OUTPUT_FORMAT);
 }
 
+void CVVideo::clearQVariant()
+{
+    qFrameNow.clear();
+    qBoxID.clear();
+    qObjID.clear();
+    qX.clear();
+    qY.clear();
+    qW.clear();
+    qH.clear();
+    qProb.clear();
+}
+
 void CVVideo::update()
 {
     BetterVideoCapture precap;
@@ -142,14 +155,11 @@ void CVVideo::update()
     fps = precap.getProperty(CV_CAP_PROP_FPS);
     frameNow = 0;
 
-
-
-
-
     qDebug() << "Opening video " << fileUrl << ", Size: " << size;
     //qDebug("Opening video %s, width: %d, height: %d\n", fileUrl.toStdString(), size.width(), size.height());
 
     //Destroy old thread, camera accessor and buffers
+    clearQVariant();
     delete thread;
     delete video;
     if(videoFrame && videoFrame->isMapped())
@@ -222,6 +232,7 @@ void CVVideo::imageReceived()
             df->insertVideo(fileUrl, fps, frameCount);
             bool res = df->insertDetection(fileUrl, qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb);
             qDebug() << "Save detection status: " << res;
+            qDebug() << "After save detection results, QVariantList size: " << qFrameNow.size();
         }
         emit frameNowChanged();
     }

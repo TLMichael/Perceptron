@@ -10,4 +10,10 @@ static cv::Scalar obj_id_to_color(int obj_id);
 
 extern DataFace *df;
 
+extern cv::VideoWriter *videoWriter;
+
+QString getCurrentTime();
+
+QString getVideoDir();
+
 #endif // UTILS_H

@@ -28,3 +28,6 @@ private:
 };
 
 #endif // DATAFACE_H
+
+
+void testDataFace();

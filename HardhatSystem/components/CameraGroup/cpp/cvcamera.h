@@ -18,7 +18,8 @@
 
 #include<opencv2/highgui/highgui.hpp>
 
-#include"camerathread.h"
+#include "camerathread.h"
+#include "utils.h"
 
 #define CVCAMERA_INITIALIZA                                               \
 {                                                                       \
@@ -31,6 +32,8 @@ class CVCamera : public QQuickItem
 {
     Q_OBJECT
     Q_DISABLE_COPY(CVCamera)
+    Q_PROPERTY(int frameNow READ getFrameNow WRITE setFrameNow NOTIFY frameNowChanged)
+
     Q_PROPERTY(int device READ getDevice WRITE setDevice)
     Q_PROPERTY(QAbstractVideoSurface* videoSurface READ getVideoSurface WRITE setVideoSurface)
     Q_PROPERTY(QSize size READ getSize WRITE setSize NOTIFY sizeChanged)
@@ -60,12 +63,18 @@ public:
 
     cv::Mat getCvImage();
 
+
+    int getFrameNow() const;
+    void setFrameNow(int f);
+
 signals:
     void sizeChanged();
 
     void deviceListChanged();
 
     void cvImageChanged();
+
+    void frameNowChanged();
 
 private:
     const QVideoFrame::PixelFormat VIDEO_OUTPUT_FORMAT = QVideoFrame::PixelFormat::Format_ARGB32;
@@ -74,6 +83,17 @@ private:
     int device = 0;
     QStringList deviceList;
     QSize size;
+
+    double fps;
+    int frameNow = 0;
+    std::vector<bbox_t> results;
+
+    QVariantList qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb;  // Database variant
+    QString fileUrl;
+
+
+
+
     BetterVideoCapture* camera = NULL;                      ///< The camera object
     CameraThread* thread = NULL;                            ///< Thread to run camera image acquisition
 
@@ -89,6 +109,8 @@ private:
     void update();
     void allocateCvImage();
     void allocateVideoFrame();
+    void clearQVariant();
+    bool saveDatabase();
 
 
 public slots:
