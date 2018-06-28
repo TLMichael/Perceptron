@@ -45,7 +45,7 @@ ApplicationWindow {
                         {
                             bookmarkName: "信息查询",
                             titleName: "信息查询",
-                            qrcLocation: "",
+                            qrcLocation: "qrc:/Search/Search.qml",
                             children: [ ]
                         }
                     ] );

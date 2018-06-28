@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/Search">
+        <file>Search.qml</file>
+    </qresource>
+</RCC>

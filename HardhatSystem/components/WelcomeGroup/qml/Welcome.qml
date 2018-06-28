@@ -86,6 +86,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
 
         onClicked: {
+            mainPageContains.showPage( "信息查询", "qrc:/Search/Search.qml" );
             // welcomeManage.openLatestVersionDownloadLink();
         }
     }
