@@ -35,21 +35,8 @@ void CameraTask::doWork()
     if(videoFrame)
         screenImage = cv::Mat(height,width,CV_8UC4,videoFrame->bits());
 
-    int x = 80;
-    int y = 150;
-    cv::RNG rng(time(0));
-
     while(running && videoFrame != NULL && camera != NULL)
     {
-        if(x < 100)
-            x += 14;
-        else
-            x = 80;
-        if(y < 200)
-            y += 14;
-        else
-            y = 150;
-
         if(!camera->grabFrame())
             continue;
         unsigned char* cameraFrame = camera->retrieveFrame();
@@ -75,7 +62,7 @@ void CameraTask::doWork()
                 cv::rectangle(tempMat, rec, obj_id_to_color((*results)[i].obj_id), 4);
             }
 
-            cv::putText(tempMat, "FUCK THE WORLD", cv::Point(x, y), cv::FONT_HERSHEY_SIMPLEX, 1.6, cv::Scalar(rng.uniform(0,255),rng.uniform(0,255),rng.uniform(0,255)), 8);
+            cv::putText(tempMat, getCurrentTime2().toStdString(), cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
             videoWriter->write(tempMat);
 
             cv::cvtColor(tempMat, screenImage, cv::COLOR_RGB2RGBA);

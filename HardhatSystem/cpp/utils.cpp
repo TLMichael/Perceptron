@@ -16,6 +16,12 @@ QString getCurrentTime()
     return time.toString("yyyy-MM-dd-hh-mm-ss"); //设置显示格式
 }
 
+QString getCurrentTime2()
+{
+    QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
+    return time.toString("yyyy-MM-dd hh:mm:ss"); //设置显示格式
+}
+
 QString getVideoDir()
 {
     QString videoDir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);

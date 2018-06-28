@@ -13,6 +13,7 @@ extern DataFace *df;
 extern cv::VideoWriter *videoWriter;
 
 QString getCurrentTime();
+QString getCurrentTime2();
 
 QString getVideoDir();
 
