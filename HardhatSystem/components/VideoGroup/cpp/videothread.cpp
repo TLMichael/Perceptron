@@ -45,6 +45,7 @@ void VideoTask::doWork()
         //Get camera image into screen frame buffer
         if(videoFrame)
         {
+
             // Assuming desktop, RGB camera image and RGBA QVideoFrame
             cv::Mat tempMat(height, width, CV_8UC3, cameraFrame);
 
@@ -53,15 +54,28 @@ void VideoTask::doWork()
             std::vector<bbox_t> tmpres = detector->detect(*iii);
             results->assign(tmpres.begin(), tmpres.end());
 
-            qDebug() << "Person numbers: " << results->size();
+            int nohat = 0;
             for(size_t i = 0; i < results->size(); i++)
             {
-                // qDebug() << "[" << i << "] " << results[i].x << " " << results[i].y << " " << results[i].w << " " << results[i].h;
-                cv::Rect rec((*results)[i].x, (*results)[i].y, (*results)[i].w, (*results)[i].h);
-
-                // cv::rectangle(tempMat, rec, colors.find(results[i].obj_id).value(), 4);
-                cv::rectangle(tempMat, rec, obj_id_to_color((*results)[i].obj_id), 4);
+                int classid = (*results)[i].obj_id;
+                int x = (*results)[i].x;
+                int y = (*results)[i].y;
+                if(classid == 1)
+                {
+                    nohat++;
+                    cv::putText(tempMat, "No Hardhat!", cv::Point(x, y-10), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
+                    cv::Rect rec((*results)[i].x, (*results)[i].y, (*results)[i].w, (*results)[i].h);
+                    cv::rectangle(tempMat, rec, cv::Scalar(0, 0, 255), 4);
+                }
+                else
+                {
+                    cv::Rect rec((*results)[i].x, (*results)[i].y, (*results)[i].w, (*results)[i].h);
+                    cv::rectangle(tempMat, rec, cv::Scalar(0, 250, 0), 4);
+                }
             }
+            cv::putText(tempMat, "[Total] " + QString::number(results->size(), 10).toStdString() + "   [No Hardhat] " +
+                        QString::number(nohat, 10).toStdString(), cv::Point(10, tempMat.rows - 10), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 255), 2);
+            cv::putText(tempMat, getCurrentTime2().toStdString(), cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);
 
             cv::cvtColor(tempMat, screenImage, cv::COLOR_RGB2RGBA);
 
