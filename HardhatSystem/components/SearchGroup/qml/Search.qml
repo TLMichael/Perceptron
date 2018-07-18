@@ -21,6 +21,11 @@ Item {
         id: videoModel
     }
 
+    onVisibleChanged: {
+        if(video.visible === true)
+            videoModel.reload()
+    }
+
     Rectangle {
         id: videoRec
         anchors.fill: parent
@@ -140,6 +145,7 @@ Item {
                     console.log(model.getPath(videoView.currentIndex))
                     videoRec.visible = true
                     videoView.visible = false
+                    controlbutton.text = "暂停"
                 }
             }
             Row {
@@ -200,20 +206,97 @@ Item {
         }
     }
 
-    ListView {
-        id: videoView
-        anchors.fill: parent
-        anchors.topMargin: 10
-        anchors.bottomMargin: 10
-        spacing: 7
-        delegate: videoDelegate
-        model: videoModel
-        focus: true
-        highlight: Rectangle{
-            width: parent.width
-            color: "lightblue"
+    Rectangle {
+        id: videoViewRec
+        x: 0
+        y: 61
+        width: 820
+        height: 529
+        color: "#ffffff"
+
+        ListView {
+            id: videoView
+            highlightRangeMode: ListView.NoHighlightRange
+            anchors.rightMargin: 0
+            anchors.leftMargin: 0
+            anchors.fill: parent
+            anchors.topMargin: 0
+            anchors.bottomMargin: 0
+            spacing: 7
+            delegate: videoDelegate
+            model: videoModel
+            focus: true
+            highlight: Rectangle{
+                width: videoViewRec.width
+                color: "lightblue"
+            }
         }
+
     }
+
+    Rectangle {
+        id: labelRec
+        x: 0
+        y: 0
+        width: 820
+        height: 61
+        color: "#ffffff"
+
+        Label {
+            id: label2
+            x: 572
+            y: 8
+            width: 161
+            height: 53
+            text: qsTr("保存日期")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.family: "Courier"
+            font.pointSize: 21
+        }
+
+        Label {
+            id: label1
+            x: 484
+            y: 8
+            width: 70
+            height: 53
+            text: qsTr("帧数")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.family: "Courier"
+            font.pointSize: 21
+        }
+
+        Label {
+            id: label
+            x: 408
+            y: 8
+            width: 70
+            height: 53
+            text: qsTr("帧率")
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            font.family: "Courier"
+            font.pointSize: 21
+        }
+
+        Label {
+            id: label3
+            x: 136
+            y: 8
+            width: 161
+            height: 53
+            text: qsTr("视频名称")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.family: "Courier"
+            font.pointSize: 21
+        }
+
+
+    }
+
 
 
 

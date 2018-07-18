@@ -46,7 +46,7 @@ Item {
         width: 120
         height: 40
         text: "视频文件分析"
-        anchors.verticalCenterOffset: 70
+        anchors.verticalCenterOffset: 14
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -63,7 +63,7 @@ Item {
         width: 120
         height: 40
         text: "实时视频分析"
-        anchors.verticalCenterOffset: 141
+        anchors.verticalCenterOffset: 74
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -80,7 +80,7 @@ Item {
         width: 120
         height: 40
         text: "信息查询"
-        anchors.verticalCenterOffset: 0
+        anchors.verticalCenterOffset: 134
         anchors.horizontalCenterOffset: 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter

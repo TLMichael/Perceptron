@@ -73,8 +73,8 @@ void VideoTask::doWork()
                     cv::rectangle(tempMat, rec, cv::Scalar(0, 250, 0), 4);
                 }
             }
-            cv::putText(tempMat, "[Total] " + QString::number(results->size(), 10).toStdString() + "   [No Hardhat] " +
-                        QString::number(nohat, 10).toStdString(), cv::Point(10, tempMat.rows - 10), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 255), 2);
+            // cv::putText(tempMat, "[Total] " + QString::number(results->size(), 10).toStdString() + "   [No Hardhat] " +
+            //             QString::number(nohat, 10).toStdString(), cv::Point(10, tempMat.rows - 10), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 255), 2);
             cv::putText(tempMat, getCurrentTime2().toStdString(), cv::Point(10, 20), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);
 
             cv::cvtColor(tempMat, screenImage, cv::COLOR_RGB2RGBA);

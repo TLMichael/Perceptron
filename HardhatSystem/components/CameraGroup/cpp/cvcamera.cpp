@@ -97,6 +97,16 @@ int CVCamera::getFrameNow() const
     return frameNow;
 }
 
+int CVCamera::getTotalNow() const
+{
+    return totalNow;
+}
+
+int CVCamera::getNoHatNow() const
+{
+    return noHatNow;
+}
+
 void CVCamera::setFrameNow(int f)
 {
     frameNow = f;
@@ -228,6 +238,16 @@ void CVCamera::imageReceived()
             qH << results[i].h;
             qProb << results[i].prob;
         }
+
+
+        noHatNow = 0;
+        for(size_t i = 0; i < results.size(); i++)
+        {
+            int classid = results[i].obj_id;
+            if(classid == 1)
+                noHatNow++;
+        }
+        totalNow = results.size();
 
         emit frameNowChanged();
 

@@ -33,6 +33,8 @@ class CVCamera : public QQuickItem
     Q_OBJECT
     Q_DISABLE_COPY(CVCamera)
     Q_PROPERTY(int frameNow READ getFrameNow WRITE setFrameNow NOTIFY frameNowChanged)
+    Q_PROPERTY(int totalNow READ getTotalNow NOTIFY totalNowChanged)
+    Q_PROPERTY(int noHatNow READ getNoHatNow NOTIFY noHatNowChanged)
 
     Q_PROPERTY(int device READ getDevice WRITE setDevice)
     Q_PROPERTY(QAbstractVideoSurface* videoSurface READ getVideoSurface WRITE setVideoSurface)
@@ -65,6 +67,9 @@ public:
 
 
     int getFrameNow() const;
+    int getTotalNow() const;
+    int getNoHatNow() const;
+
     void setFrameNow(int f);
 
 signals:
@@ -75,6 +80,8 @@ signals:
     void cvImageChanged();
 
     void frameNowChanged();
+    void totalNowChanged();
+    void noHatNowChanged();
 
 private:
     const QVideoFrame::PixelFormat VIDEO_OUTPUT_FORMAT = QVideoFrame::PixelFormat::Format_ARGB32;
@@ -86,6 +93,8 @@ private:
 
     double fps;
     int frameNow = 0;
+    int totalNow = 0;
+    int noHatNow = 0;
     std::vector<bbox_t> results;
 
     QVariantList qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb;  // Database variant
