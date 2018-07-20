@@ -52,6 +52,12 @@ public:
             m_videos.append(video);
             video = 0;
         }
+
+        QVector<VideoData*> temp;
+        QVector<VideoData*>::reverse_iterator riter;
+        for(riter = m_videos.rbegin(); riter != m_videos.rend(); riter++)
+            temp.push_back(*riter);
+        m_videos = temp;
     }
 
     void reset()
@@ -114,6 +120,14 @@ void VideoListModel::reload()
     m_dptr->reset();
     m_dptr->load();
     endResetModel();
+}
+
+bool VideoListModel::deleteVideo(QString path) const
+{
+    QFile file(path);
+    if(file.exists())
+        file.remove();
+    return df->deleteVideo(path);
 }
 
 QHash<int, QByteArray> VideoListModel::roleNames() const

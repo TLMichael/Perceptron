@@ -22,6 +22,7 @@ CameraTask::~CameraTask()
 
 void CameraTask::stop()
 {
+    imageReady();
     running = false;
 }
 

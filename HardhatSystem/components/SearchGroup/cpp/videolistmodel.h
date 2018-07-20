@@ -1,6 +1,7 @@
 #ifndef VIDEOLISTMODEL_H
 #define VIDEOLISTMODEL_H
 #include <QAbstractListModel>
+#include <QFile>
 
 #define VIDEOLISTMODEL_INITIALIZA                                               \
 {                                                                       \
@@ -21,6 +22,7 @@ public:
 
     Q_INVOKABLE QVariant getPath(int index) const;
     Q_INVOKABLE void reload();
+    Q_INVOKABLE bool deleteVideo(QString path) const;
 
 private:
     VideoListModelPrivate *m_dptr;

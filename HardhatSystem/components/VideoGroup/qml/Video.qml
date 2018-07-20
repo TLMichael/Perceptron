@@ -167,6 +167,10 @@ Item {
             fileDialog.open()
             anchors.verticalCenterOffset = 261
             anchors.horizontalCenterOffset = 185
+
+            width = 120
+            height = 40
+            textSize = 16
             controlbutton.visible = true
 
             playerRect.color = "black"

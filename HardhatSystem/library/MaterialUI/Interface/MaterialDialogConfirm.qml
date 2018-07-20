@@ -18,11 +18,12 @@ MaterialDialog {
         dialog.callbackOnOK = callbackOnOK;
         dialog.open();
 
-        materialUI.showDarkBackground();
+        // materialUI.showDarkBackground();
     }
 
     onAccepted: {
-        materialUI.hideDarkBackground();
+        console.log("accepted")
+        // materialUI.hideDarkBackground();
 
         if (callbackOnOK)
         {
@@ -31,7 +32,7 @@ MaterialDialog {
     }
 
     onRejected: {
-        materialUI.hideDarkBackground();
+        // materialUI.hideDarkBackground();
 
         if (callbackOnCancel)
         {

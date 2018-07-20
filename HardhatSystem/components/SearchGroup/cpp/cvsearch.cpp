@@ -1,19 +1,14 @@
-#include "cvvideo.h"
+#include "cvsearch.h"
 
-
-CVVideo::CVVideo(QQuickItem *parent) :
+CVSearch::CVSearch(QQuickItem *parent) :
     QQuickItem(parent)
 {
-
     size = QSize(640,480);
-    connect(this, &QQuickItem::parentChanged, this, &CVVideo::changeParent);
+    connect(this, &QQuickItem::parentChanged, this, &CVSearch::changeParent);
     connect(this, SIGNAL(fileUrlChanged()), this, SLOT(fileUrlGeted()));
-
-    // Open video right away
-    // update();
 }
 
-CVVideo::~CVVideo()
+CVSearch::~CVSearch()
 {
     if(thread)
         thread->stop();
@@ -22,22 +17,24 @@ CVVideo::~CVVideo()
     //Video release is automatic when cv::VideoCapture is destroyed
 }
 
-void CVVideo::changeParent(QQuickItem* parent)
+void CVSearch::changeParent(QQuickItem* parent)
 {
     //FIXME: we probably need to disconnect the previous parent
     //TODO: probably a good idea to stop the camera (and restart it if we are auto-starting in this context)
 }
 
-void CVVideo::videoControl()
+void CVSearch::videoControl()
 {
-    //    qDebug() << "frameCount: " << frameCount;
-    //    qDebug() << "frameNow:   " << frameNow;
+//    qDebug() << "frameCount: " << frameCount;
+//    qDebug() << "frameNow: " << frameNow;
     if(frameCount == frameNow && frameCount > 0)
     {
         frameNow = 0;
         thread->stop();
 
-        video->setProperty(CV_CAP_PROP_POS_AVI_RATIO, 0);
+        // video->setProperty(CV_CAP_PROP_POS_AVI_RATIO, 0);    // This code doesn't work, so weird
+        video->open(fileUrl);
+
         clearQVariant();
         isrunning = true;
         thread->start();
@@ -56,40 +53,56 @@ void CVVideo::videoControl()
     }
 }
 
-int CVVideo::getFrameCount()
+int CVSearch::getFrameCount()
 {
     return frameCount;
 }
 
-void CVVideo::fileUrlGeted()
+void CVSearch::fileUrlGeted()
 {
+    if(fileUrl == "0")
+    {
+        qDebug() << "收到空文件路径";
+        //Destroy old thread, camera accessor and buffers
+        clearQVariant();
+        delete thread;
+        delete video;
+        if(videoFrame && videoFrame->isMapped())
+            videoFrame->unmap();
+        delete videoFrame;
+        videoFrame = NULL;
+        delete[] cvImageBuf;
+        cvImageBuf = NULL;
+
+        return;
+    }
     // Open video now
     qDebug() << "signal getUrl: " << fileUrl << endl;
+    detectionCount = df->searchDetection(fileUrl, qFrameNow, qBoxID, qObjID, qX, qY, qW, qH);
     update();
 }
 
-QString CVVideo::getFileUrl() const
+
+QString CVSearch::getFileUrl() const
 {
     return fileUrl;
 }
 
-void CVVideo::setFileUrl(QString fileUrl)
+void CVSearch::setFileUrl(QString fileUrl)
 {
     if(fileUrl != NULL && this->fileUrl != fileUrl)
     {
         this->fileUrl = fileUrl;
-        // qDebug() << "set getUrl: " << fileUrl << endl;
         emit fileUrlChanged();
-        // update();
     }
 }
 
-QSize CVVideo::getSize() const
+QSize CVSearch::getSize() const
 {
     return size;
 }
 
-void CVVideo::setSize(QSize size)
+void CVSearch::setSize(QSize size)
 {
     if(this->size.width() != size.width() || this->size.height() != size.height()){
         this->size = size;
@@ -98,7 +111,7 @@ void CVVideo::setSize(QSize size)
     }
 }
 
-cv::Mat CVVideo::getCvImage()
+cv::Mat CVSearch::getCvImage()
 {
     if(!exportCvImage){
         exportCvImage = true;
@@ -107,40 +120,40 @@ cv::Mat CVVideo::getCvImage()
     return cvImage;
 }
 
-int CVVideo::getFrameNow() const
+int CVSearch::getFrameNow() const
 {
     return frameNow;
 }
 
-int CVVideo::getTotalNow() const
+int CVSearch::getTotalNow() const
 {
     return totalNow;
 }
 
-int CVVideo::getNoHatNow() const
+int CVSearch::getNoHatNow() const
 {
     return noHatNow;
 }
 
-void CVVideo::setFrameNow(int f)
+void CVSearch::setFrameNow(int f)
 {
     frameNow = f;
 }
 
 
-void CVVideo::allocateCvImage()
+void CVSearch::allocateCvImage()
 {
     // delete[] cvImageBuf;
     cvImageBuf = new unsigned char[size.width() * size.height() * 3];
     cvImage = cv::Mat(size.height(), size.width(), CV_8UC3, cvImageBuf);
 }
 
-void CVVideo::allocateVideoFrame()
+void CVSearch::allocateVideoFrame()
 {
     videoFrame = new QVideoFrame(size.width() * size.height() * 4, size, size.width() * 4, VIDEO_OUTPUT_FORMAT);
 }
 
-void CVVideo::clearQVariant()
+void CVSearch::clearQVariant()
 {
     qFrameNow.clear();
     qBoxID.clear();
@@ -149,16 +162,15 @@ void CVVideo::clearQVariant()
     qY.clear();
     qW.clear();
     qH.clear();
-    qProb.clear();
 }
 
-void CVVideo::update()
+
+void CVSearch::update()
 {
     BetterVideoCapture precap;
     precap.open(fileUrl);
     int w = precap.getProperty(CV_CAP_PROP_FRAME_WIDTH);
     int h = precap.getProperty(CV_CAP_PROP_FRAME_HEIGHT);
-    // precap.~BetterVideoCapture();
     qDebug() << "w: " << w << " h: " << h;
     size = QSize(w, h);
     frameCount = precap.getProperty(CV_CAP_PROP_FRAME_COUNT);
@@ -166,19 +178,13 @@ void CVVideo::update()
     frameNow = 0;
 
     qDebug() << "Opening video " << fileUrl << ", Size: " << size;
-    //qDebug("Opening video %s, width: %d, height: %d\n", fileUrl.toStdString(), size.width(), size.height());
 
     //Destroy old thread, camera accessor and buffers
     clearQVariant();
-    delete thread;
-    delete video;
-    if(videoFrame && videoFrame->isMapped())
-        videoFrame->unmap();
-    delete videoFrame;
     videoFrame = NULL;
-    delete[] cvImageBuf;
     cvImageBuf = NULL;
 
+//    qDebug() << "Util now, OK";
     //Create new buffers, camera accessor and thread
     if(exportCvImage)
         allocateCvImage();
@@ -186,7 +192,7 @@ void CVVideo::update()
         allocateVideoFrame();
 
     video = new BetterVideoCapture();
-    thread = new VideoThread(&results, video, videoFrame, cvImageBuf, size.width(), size.height());
+    thread = new SearchThread(video, videoFrame, cvImageBuf, size.width(), size.height());
     connect(thread, SIGNAL(imageReady()), this, SLOT(imageReceived()));
 
     //Open newly created device
@@ -213,7 +219,7 @@ void CVVideo::update()
 
 }
 
-void CVVideo::imageReceived()
+void CVSearch::imageReceived()
 {
     //Update VideoOutput
     if(videoSurface)
@@ -224,75 +230,28 @@ void CVVideo::imageReceived()
         frameNow++;
         qDebug() << "frameNow: " << frameNow << "/" << frameCount;
         // QVariantList qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb;
-        for(size_t i = 0; i < results.size(); i++)
-        {
-            qFrameNow << frameNow;
-            qBoxID << (int)i;
-            qObjID << results[i].obj_id;
-            qX << results[i].x;
-            qY << results[i].y;
-            qW << results[i].w;
-            qH << results[i].h;
-            qProb << results[i].prob;
-        }
 
-        noHatNow = 0;
-        for(size_t i = 0; i < results.size(); i++)
-        {
-            int classid = results[i].obj_id;
-            if(classid == 1)
-                noHatNow++;
-        }
-        totalNow = results.size();
-
-        if(frameNow == frameCount)
-        {
-            qDebug() << "Save detection results to database, size: " << qFrameNow.size();
-            df->insertVideo(fileUrl, fps, frameCount);
-            bool res = df->insertDetection(fileUrl, qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb);
-            qDebug() << "Save detection status: " << res;
-            qDebug() << "After save detection results, QVariantList size: " << qFrameNow.size();
-        }
+        noHatNow = df->countNoHat(frameNow);
+        totalNow = df->countTotal(frameNow);
         emit frameNowChanged();
     }
+
+
     //Update exported CV image
     if(exportCvImage)
         emit cvImageChanged();
+
 }
 
-QAbstractVideoSurface* CVVideo::getVideoSurface() const
+QAbstractVideoSurface* CVSearch::getVideoSurface() const
 {
     return videoSurface;
 }
 
-void CVVideo::setVideoSurface(QAbstractVideoSurface* surface)
+void CVSearch::setVideoSurface(QAbstractVideoSurface* surface)
 {
     if(videoSurface != surface){
         videoSurface = surface;
         // update();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

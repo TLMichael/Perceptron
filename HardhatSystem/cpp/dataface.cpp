@@ -119,6 +119,43 @@ bool DataFace::insertDetection(QString path, QVariantList qFrameNow, QVariantLis
     return true;
 }
 
+bool DataFace::deleteVideo(QString path)
+{
+    QSqlQuery tmpQuery;
+
+    if(!tmpQuery.exec("select videoID from video where path='" + path + "'"))
+    {
+        qDebug() << "查询video表失败！";
+        return false;
+    }
+
+    // qDebug() << "查询到记录个数： " << tmpQuery.size();
+    int videoID;
+    if(tmpQuery.next())
+    {
+        videoID = tmpQuery.value(0).toInt();
+        // qDebug() << "get videoID: " << videoID;
+    }
+    else
+    {
+        qDebug() << "查询video表，path不存在！";
+        return false;
+    }
+
+    if(!tmpQuery.exec("delete from detection where videoID='" + QString::number(videoID, 10) + "'"))
+    {
+        qDebug() << "删除detection表的记录失败！";
+        return false;
+    }
+
+    if(!tmpQuery.exec("delete from video where videoID='" + QString::number(videoID, 10) + "'"))
+    {
+        qDebug() << "删除video表的记录失败！";
+        return false;
+    }
+    return true;
+}
+
 int DataFace::searchVideo(QList<QString> &pathL, QList<float> &fpsL, QList<int> &frameCountL, QList<QDateTime> &saveTimeL)
 {
     QSqlQuery tmpQuery;
@@ -155,7 +192,7 @@ int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &b
 {
     QSqlQuery tmpQuery;
 
-    if(!tmpQuery.exec("select videoID from video where path='" + path + "'"))
+    if(!tmpQuery.exec("select videoID,frameCount from video where path='" + path + "'"))
     {
         qDebug() << "查询video表失败！";
         return -1;
@@ -163,9 +200,11 @@ int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &b
 
     // qDebug() << "查询到记录个数： " << tmpQuery.size();
     int videoID;
+    int frameCount;
     if(tmpQuery.next())
     {
         videoID = tmpQuery.value(0).toInt();
+        frameCount = tmpQuery.value(1).toInt();
         qDebug() << "get videoID: " << videoID;
     }
     else
@@ -184,6 +223,7 @@ int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &b
     if(recordNum <= 0)
     {
         qDebug() << "视频记录为空";
+        results = new std::vector<bbox_t>[frameCount + 1];
         return recordNum;
     }
 
@@ -206,7 +246,54 @@ int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &b
         hL.append(h);
     }
 
+    this->qFrameNow = frameNowL;
+    this->qBoxID = boxIDL;
+    this->qObjID = objIDL;
+    this->qX = xL;
+    this->qY = yL;
+    this->qW = wL;
+    this->qH = hL;
+
+    results = new std::vector<bbox_t>[frameCount + 1];
+    for(int i = 0; i < qFrameNow.size(); i++)
+    {
+        bbox_t tmpBox;
+        tmpBox.obj_id = qObjID[i];
+        tmpBox.x = qX[i];
+        tmpBox.y = qY[i];
+        tmpBox.w = qW[i];
+        tmpBox.h = qH[i];
+
+        results[qFrameNow[i]].push_back(tmpBox);
+        qDebug() << "得到第" << qFrameNow[i] << "帧: " << results[qFrameNow[i]].size();
+    }
+
+
+//    qDebug() << "frameCount: " << frameCount;
+//    qDebug() << "results[4].size: " << results[4].size();
     return recordNum;
+}
+
+int DataFace::countNoHat(int frameNow)
+{
+    int count = 0;
+    for(size_t i = 0; i < results[frameNow].size(); i++)
+    {
+        if(results[frameNow][i].obj_id == 1)
+            count++;
+    }
+    return count;
+}
+
+int DataFace::countTotal(int frameNow)
+{
+    return results[frameNow].size();
+}
+
+std::vector<bbox_t> DataFace::getResult(int frameNow)
+{
+    qDebug() << "[" << frameNow << "] " << results[frameNow].size();
+    return results[frameNow];
 }
 
 

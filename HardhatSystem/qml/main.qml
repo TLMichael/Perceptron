@@ -349,7 +349,7 @@ ApplicationWindow {
         id: mainPageContains
         x: 180
         y: 64
-        z: -2
+        z: -1
         width: parent.width - 180
         height: parent.height - 64
 

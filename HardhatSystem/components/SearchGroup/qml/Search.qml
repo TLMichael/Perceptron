@@ -1,11 +1,12 @@
 import QtQuick 2.7
 import QtQuick.Controls 1.4
 import QtMultimedia 5.4
-import QtQuick.Dialogs 1.0
+import QtQuick.Dialogs 1.1
 import "qrc:/MaterialUI/Interface/"
 
 import com.nuaa.CModel 1.0
 import Search 1.0
+import com.nuaa.CVSearch 1.0
 
 
 Item {
@@ -26,6 +27,10 @@ Item {
             videoModel.reload()
     }
 
+
+
+
+
     Rectangle {
         id: videoRec
         anchors.fill: parent
@@ -42,15 +47,19 @@ Item {
             height:520
             color: "black"
 
-            MediaPlayer {
+            CVSearch {
                 id: mediaPlayer
-                autoPlay: true
+                fileUrl: ""
 
-                onPositionChanged: {
-                    pastBar.width = mediaPlayer.position / mediaPlayer.duration * parent.width
-                }
-                onStopped: {
-                    controlbutton.text = "重新开始"
+                onFrameNowChanged: {
+                    totalNumLabel.text = mediaPlayer.totalNow
+                    nohatNumLabel.text = mediaPlayer.noHatNow
+
+                    pastBar.width = mediaPlayer.frameNow / mediaPlayer.getFrameCount() * parent.width
+                    if(pastBar.width === parent.width)
+                        controlbutton.text = "重新开始"
+
+                    // console.log(pastBar.width)
                 }
             }
 
@@ -78,6 +87,85 @@ Item {
                 height: 20
                 color: "gray"
             }
+
+            Label {
+                id: nohatNumLabel
+                x: 756
+                y: 52
+                width: 37
+                height: 32
+                color: "#79d1fc"
+                text: qsTr("0")
+                z: 4
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                clip: false
+                font.pointSize: 15
+                opacity: 1
+                font.family: "Courier"
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Label {
+                id: totalNumLabel
+                x: 756
+                y: 17
+                width: 37
+                height: 32
+                color: "#79d1fc"
+                text: qsTr("0")
+                z: 3
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.family: "Courier"
+                clip: false
+                opacity: 1
+                font.pointSize: 15
+            }
+
+            Label {
+                id: nohatLabel
+                x: 676
+                y: 52
+                width: 82
+                height: 32
+                color: "#82d5fd"
+                text: qsTr("未戴帽：")
+                z: 1
+                font.bold: true
+                clip: false
+                opacity: 1
+                font.pointSize: 15
+            }
+
+            Label {
+                id: totalLabel
+                x: 676
+                y: 17
+                width: 82
+                height: 32
+                color: "#79d1fc"
+                text: qsTr("总人数：")
+                z: 2
+                font.bold: true
+                font.pointSize: 15
+                opacity: 1
+                clip: false
+            }
+
+            Rectangle {
+                id: shadowRec
+                x: 657
+                y: 8
+                width: 155
+                height: 86
+                color: "#000000"
+                radius: 0
+                border.color: "#dc1c04"
+                border.width: 5
+                opacity: 0.5
+            }
         }
         MaterialButton {
             id: controlbutton
@@ -91,18 +179,17 @@ Item {
                 if(text === "暂停")
                 {
                     text = "继续"
-                    mediaPlayer.pause()
+                    mediaPlayer.videoControl()
                 }
                 else if(text === "继续")
                 {
                     text = "暂停"
-                    mediaPlayer.play()
+                    mediaPlayer.videoControl()
                 }
                 else
                 {
                     text = "暂停"
-                    mediaPlayer.seek(0)
-                    mediaPlayer.play()
+                    mediaPlayer.videoControl()
                 }
 
             }
@@ -116,8 +203,8 @@ Item {
             text: "返回"
 
             onClicked: {
-                mediaPlayer.pause()
-                videoModel.reload()
+                mediaPlayer.fileUrl = "0"
+                //  videoModel.reload()
                 videoRec.visible = false
                 videoView.visible = true
             }
@@ -140,14 +227,15 @@ Item {
                 }
                 onClicked: {
                     var model = videoView.model
-                    mediaPlayer.source = "file://" + model.getPath(videoView.currentIndex)
-                    mediaPlayer.play()
+                    mediaPlayer.fileUrl = model.getPath(videoView.currentIndex)
                     console.log(model.getPath(videoView.currentIndex))
+
                     videoRec.visible = true
                     videoView.visible = false
                     controlbutton.text = "暂停"
                 }
             }
+
             Row {
                 id: videoRow
                 spacing: video.width / 16 / 5
@@ -196,15 +284,119 @@ Item {
                 }
 
                 Rectangle {
-
+                    id: deleteRec
                     width: video.width / 16
                     height: wrapper.height
                     color: wrapper.ListView.isCurrentItem? "red" : "black"
+
+                    Label {
+                        color: "#ffffff"
+                        anchors.fill: parent
+                        text: "删除"
+                        font.pointSize: 15
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                    MouseArea {
+                        id: deleteArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        property string msgtext: ""
+                        property string url: ""
+
+                        onEntered: {
+                            wrapper.ListView.view.currentIndex = index
+                        }
+
+                        onClicked: {
+                            var model = videoView.model
+                            url = model.getPath(videoView.currentIndex)
+                            msgtext = url + "将被删除"
+
+                            function accpet() {
+                                console.log("accept")
+                                var flag = model.deleteVideo(url)
+                                if(flag === true)
+                                    console.log("删除成功")
+                                else
+                                    console.log("删除失败")
+                                videoModel.reload()
+                            }
+
+                            deleteDia.show("删除", msgtext, null, accpet)
+                        }
+                    }
                 }
             }
-
         }
     }
+
+    MaterialDialog {
+        id: deleteDia
+        z: 2
+
+        negativeButtonText: ("取消")
+        positiveButtonText: ("确认")
+
+        property var callbackOnCancel: null
+        property var callbackOnOK: null
+
+        function show(title, message, callbackOnCancel, callbackOnOK) {
+            deleteDia.title = title
+            deleteDia.text = message
+            deleteDia.callbackOnCancel = callbackOnCancel
+            deleteDia.callbackOnOK = callbackOnOK
+            deleteDia.open()
+
+            darkBackground.opacity = 1
+        }
+
+        onAccepted: {
+            darkBackground.opacity = 0;
+
+            if (callbackOnOK)
+            {
+                callbackOnOK()
+            }
+        }
+
+        onRejected: {
+            darkBackground.opacity = 0;
+
+            if (callbackOnCancel)
+            {
+                callbackOnCancel()
+            }
+        }
+    }
+
+    Rectangle {
+        id: darkBackground
+        anchors.fill: parent
+        color: "#55000000"
+        z: 1
+        visible: opacity !== 0
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 500; easing.type: Easing.OutCubic }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.AllButtons
+
+            //            onClicked: {
+            //                if (materialUI.onDarkBackgroundClicked)
+            //                {
+            //                    materialUI.onDarkBackgroundClicked();
+            //                }
+            //            }
+        }
+    }
+
 
     Rectangle {
         id: videoViewRec
@@ -244,7 +436,7 @@ Item {
 
         Label {
             id: label2
-            x: 572
+            x: 574
             y: 8
             width: 161
             height: 53
@@ -257,7 +449,7 @@ Item {
 
         Label {
             id: label1
-            x: 484
+            x: 486
             y: 8
             width: 70
             height: 53
@@ -270,7 +462,7 @@ Item {
 
         Label {
             id: label
-            x: 408
+            x: 420
             y: 8
             width: 70
             height: 53

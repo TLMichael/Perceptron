@@ -6,7 +6,10 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QList>
+#include <QMap>
 #include <QDateTime>
+
+#include "yolo_v2_class.hpp"
 
 class DataFace
 {
@@ -17,14 +20,22 @@ public:
     bool insertDetection(QString path, QVariantList qFrameNow, QVariantList qBoxID, \
                          QVariantList qObjID, QVariantList qX, QVariantList qY, \
                          QVariantList qW, QVariantList qH, QVariantList qProb);
+    bool deleteVideo(QString path);
     int searchVideo(QList<QString> &pathL, QList<float> &fpsL, QList<int> &frameCountL, QList<QDateTime> &saveTimeL);
     int searchDetection(QString path, QList<int> &frameNowL, QList<int> &boxIDL, QList<int> &objIDL, QList<int> &xL, QList<int> &yL, QList<int> &wL, QList<int> &hL);
+    int countNoHat(int frameNow);
+    int countTotal(int frameNow);
+    std::vector<bbox_t> getResult(int frameNow);
+
 
 private:
     //数据库变量
     QString dbName = "hardhat_system";
 
     QSqlDatabase db;
+
+    QList<int> qFrameNow, qBoxID, qObjID, qX, qY, qW, qH;
+    std::vector<bbox_t> *results;
 };
 
 #endif // DATAFACE_H

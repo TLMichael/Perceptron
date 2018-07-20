@@ -278,17 +278,17 @@ Item {
             NumberAnimation { duration: 500; easing.type: Easing.OutCubic }
         }
 
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.AllButtons
+//        MouseArea {
+//            anchors.fill: parent
+//            acceptedButtons: Qt.AllButtons
 
-            onClicked: {
-                if (materialUI.onDarkBackgroundClicked)
-                {
-                    materialUI.onDarkBackgroundClicked();
-                }
-            }
-        }
+//            onClicked: {
+//                if (materialUI.onDarkBackgroundClicked)
+//                {
+//                    materialUI.onDarkBackgroundClicked();
+//                }
+//            }
+//        }
     }
 
     Rectangle {
