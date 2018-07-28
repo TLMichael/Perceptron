@@ -87,7 +87,7 @@ private:
     const QVideoFrame::PixelFormat VIDEO_OUTPUT_FORMAT = QVideoFrame::PixelFormat::Format_ARGB32;
 
     bool isrunning = true;
-    int device = 0;
+    int device = -1;
     QStringList deviceList;
     QSize size;
 

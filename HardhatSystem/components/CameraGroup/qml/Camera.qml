@@ -164,8 +164,11 @@ Item {
         id: deviceBox
         x: 8
         y: 526
-        width: 117
+        width: 300
         height: 34
+
+        model: mediaPlayer.deviceList
+
     }
 
 

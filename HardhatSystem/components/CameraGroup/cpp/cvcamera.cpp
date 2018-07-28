@@ -41,6 +41,8 @@ void CVCamera::changeParent(QQuickItem* parent)
 
 void CVCamera::videoControl()
 {
+    if(deviceList.size() == 0)
+        return;
     if(isrunning == true)
     {
         isrunning = false;
@@ -63,6 +65,7 @@ int CVCamera::getDevice() const
 
 void CVCamera::setDevice(int device)
 {
+    qDebug() << "Device: " << device;
     if(device >= 0 && this->device != device){
         this->device = device;
         update();
@@ -143,6 +146,8 @@ void CVCamera::clearQVariant()
 
 bool CVCamera::saveDatabase()
 {
+    if(deviceList.size() == 0)
+        return false;
     qDebug() << "Save video(mp4) to dir: " << fileUrl;
     videoWriter->release();
 
@@ -150,6 +155,16 @@ bool CVCamera::saveDatabase()
     df->insertVideo(fileUrl, fps, frameNow);
     bool res = df->insertDetection(fileUrl, qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb);
     qDebug() << "Save detection status: " << res;
+
+    frameNow = 0;
+    qFrameNow.clear();
+    qBoxID.clear();
+    qObjID.clear();
+    qX.clear();
+    qY.clear();
+    qW.clear();
+    qH.clear();
+    qProb.clear();
     qDebug() << "After save detection results, QVariantList size: " << qFrameNow.size();
 
     return true;
@@ -157,6 +172,9 @@ bool CVCamera::saveDatabase()
 
 void CVCamera::update()
 {
+    if(deviceList.size() == 0)
+        return;
+
     BetterVideoCapture precap;
     precap.open(device);
     int w = precap.getProperty(CV_CAP_PROP_FRAME_WIDTH);
