@@ -1,3 +1,5 @@
 *Release
 *Debug
-HardhatSystem/*.pro.user
+HardhatSystem/HardhatSystem.pro.user
+HardhatSystem/cpp/yolo_cpp_dll.lib
+HardhatSystem/cpp/libdarknet.so
