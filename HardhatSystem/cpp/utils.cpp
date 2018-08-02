@@ -13,13 +13,13 @@ cv::VideoWriter *videoWriter = new cv::VideoWriter();
 QString getCurrentTime()
 {
     QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
-    return time.toString("yyyy-MM-dd-hh-mm-ss"); //设置显示格式
+    return time.toString("yyyy-MM-dd-hh-mm-ss");
 }
 
 QString getCurrentTime2()
 {
     QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
-    return time.toString("yyyy-MM-dd hh:mm:ss"); //设置显示格式
+    return time.toString("yyyy-MM-dd hh:mm:ss");
 }
 
 QString getVideoDir()

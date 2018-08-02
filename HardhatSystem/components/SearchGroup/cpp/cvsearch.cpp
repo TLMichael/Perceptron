@@ -1,4 +1,4 @@
-#include "cvsearch.h"
+﻿#include "cvsearch.h"
 
 CVSearch::CVSearch(QQuickItem *parent) :
     QQuickItem(parent)
@@ -63,7 +63,6 @@ void CVSearch::fileUrlGeted()
     if(fileUrl == "0")
     {
         qDebug() << "收到空文件路径";
-        //Destroy old thread, camera accessor and buffers
         clearQVariant();
         delete thread;
         delete video;

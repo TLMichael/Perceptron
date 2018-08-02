@@ -17,11 +17,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCLUDEPATH += \
-    $$PWD/cpp/ \
-    /usr/local/include \
-    /usr/local/include/opencv \
-    /usr/local/include/opencv2
+INCLUDEPATH += $$PWD/cpp/
+unix:INCLUDEPATH += /usr/local/include/
+win32:INCLUDEPATH += C:/opencv_3.0/opencv/build/include/
 
 HEADERS += \
     $$PWD/cpp/jqtools_manage.hpp \
@@ -38,9 +36,11 @@ SOURCES += \
 RESOURCES += \
     $$PWD/qml/qml.qrc
 
-LIBS += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
-LIBS += -L$$PWD/cpp -ldarknet
+unix:LIBS += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio
+unix:LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
+unix:LIBS += -L$$PWD/cpp -ldarknet
+win32:LIBS += C:/opencv_3.0/opencv/build/x64/vc14/lib/opencv_world340.lib
+win32:LIBS += $$PWD/cpp/yolo_cpp_dll.lib
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

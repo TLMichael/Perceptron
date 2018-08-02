@@ -155,6 +155,9 @@ void CVVideo::clearQVariant()
 void CVVideo::update()
 {
     BetterVideoCapture precap;
+    #ifdef _WIN32
+    fileUrl = fileUrl.mid(8);  //fix windows cannot parse "file://"
+    #endif
     precap.open(fileUrl);
     int w = precap.getProperty(CV_CAP_PROP_FRAME_WIDTH);
     int h = precap.getProperty(CV_CAP_PROP_FRAME_HEIGHT);

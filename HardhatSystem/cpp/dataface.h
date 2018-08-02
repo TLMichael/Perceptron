@@ -1,4 +1,4 @@
-#ifndef DATAFACE_H
+﻿#ifndef DATAFACE_H
 #define DATAFACE_H
 
 #include <QSqlDatabase>
