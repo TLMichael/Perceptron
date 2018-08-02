@@ -1,5 +1,11 @@
-*Release
-*Debug
-HardhatSystem/HardhatSystem.pro.user
+# vscode config directory
+.vscode/
+
+# qtcreator generated files
+HardhatSystem/*.pro.user*
+*Release/
+*Debug/
+
+# darknet library
 HardhatSystem/cpp/yolo_cpp_dll.lib
 HardhatSystem/cpp/libdarknet.so
