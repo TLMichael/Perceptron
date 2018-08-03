@@ -2,7 +2,3 @@
 HardhatSystem/*.pro.user*
 *Release/
 *Debug/
-
-# darknet library
-HardhatSystem/cpp/yolo_cpp_dll.lib
-HardhatSystem/cpp/libdarknet.so
