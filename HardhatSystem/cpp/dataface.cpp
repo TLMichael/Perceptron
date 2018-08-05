@@ -3,10 +3,7 @@
 
 DataFace::DataFace()
 {
-    db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setUserName("root");
-    db.setPassword("taolue");
+    db=QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(dbName);
     open();
 }
@@ -20,7 +17,7 @@ bool DataFace::open()
     }
 
     QSqlQuery tmpQuery;
-    if(!tmpQuery.exec("create table if not exists video (videoID int primary key auto_increment, path varchar(100) unique, fps float(5,2), frameCount int, saveTime timestamp default current_timestamp())"))
+    if(!tmpQuery.exec("create table if not exists video (videoID integer primary key autoincrement, path varchar(100) unique, fps float(5,2), frameCount int, saveTime timestamp default current_timestamp);"))
     {
         qDebug() << "创建video表失败！";
         return false;
