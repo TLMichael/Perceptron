@@ -172,7 +172,7 @@ bool CVCamera::saveDatabase()
 
 void CVCamera::update()
 {
-    if(deviceList.size() == 0)
+    if(deviceList.size() == 0 || device < 0)
         return;
 
     BetterVideoCapture precap;

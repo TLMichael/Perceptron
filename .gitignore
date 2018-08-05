@@ -2,3 +2,5 @@
 HardhatSystem/*.pro.user*
 *Release/
 *Debug/
+
+*.doc

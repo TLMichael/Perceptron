@@ -38,7 +38,7 @@ RESOURCES += \
 
 unix:LIBS += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio
 unix:LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
-unix:LIBS += -L$$PWD/cpp -ldarknet
+unix:LIBS += -ldarknet
 win32:LIBS += C:/opencv_3.0/opencv/build/x64/vc14/lib/opencv_world340.lib
 win32:LIBS += $$PWD/cpp/yolo_cpp_dll.lib
 
