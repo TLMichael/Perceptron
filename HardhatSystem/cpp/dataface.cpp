@@ -3,10 +3,11 @@
 
 DataFace::DataFace()
 {
-    db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("127.0.0.1");
-    db.setUserName("root");
-    db.setPassword("taolue");
+//    db=QSqlDatabase::addDatabase("QMYSQL");
+//    db.setHostName("127.0.0.1");
+//    db.setUserName("root");
+//    db.setPassword("taolue");
+    db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(dbName);
     open();
 }
@@ -20,9 +21,9 @@ bool DataFace::open()
     }
 
     QSqlQuery tmpQuery;
-    if(!tmpQuery.exec("create table if not exists video (videoID int primary key auto_increment, path varchar(100) unique, fps float(5,2), frameCount int, saveTime timestamp default current_timestamp())"))
+    if(!tmpQuery.exec("create table if not exists video (videoID integer primary key autoincrement, path varchar(100) unique, fps float(5,2), frameCount int, saveTime timestamp default current_timestamp)"))
     {
-        qDebug() << "创建video表失败！";
+        qDebug() << "创建video表失败！" << tmpQuery.lastError().text();
         return false;
     }
     if(!tmpQuery.exec("create table if not exists detection (videoID int, frameNow int, boxID int, objID int, x int, y int, w int, h int, prob float(5,2), foreign key(videoID) references video(videoID) on delete cascade on update cascade, primary key(videoID, frameNow, boxID))"))
@@ -54,7 +55,7 @@ bool DataFace::insertVideo(QString path, float fps, int frameCount)
     }
 
     // 插入新video纪录
-    tmpQuery.prepare("insert into video values(NULL,?,?,?,default)");
+    tmpQuery.prepare("insert into video(path,fps,frameCount) values(?,?,?)");
     QVariantList qpath, qfps, qframecount;
     qpath << path;
     qfps << fps;
@@ -158,18 +159,19 @@ bool DataFace::deleteVideo(QString path)
 
 int DataFace::searchVideo(QList<QString> &pathL, QList<float> &fpsL, QList<int> &frameCountL, QList<QDateTime> &saveTimeL)
 {
-    QSqlQuery tmpQuery;
-    if(!tmpQuery.exec("select videoID,path,fps,frameCount,DATE_FORMAT(saveTime, '%Y-%c-%e %H:%i:%s.%f') as saveTime from video"))
+    QSqlQuery tmpQuery(db);
+    // if(!tmpQuery.exec("select videoID,path,fps,frameCount,DATE_FORMAT(saveTime, '%Y-%c-%e %H:%i:%s.%f') as saveTime from video"))
+    if(!tmpQuery.exec("SELECT * FROM video"))
     {
-        qDebug() << "查询video表失败！";
+        qDebug() << "查询video表失败！" << tmpQuery.lastError().text();
         return -1;
     }
 
     int recordNum = tmpQuery.size();
     if(recordNum <= 0)
     {
-        qDebug() << "视频记录为空";
-        return recordNum;
+        qDebug() << "视频记录为空" << tmpQuery.lastQuery();
+        // return recordNum;
     }
 
     while(tmpQuery.next())
