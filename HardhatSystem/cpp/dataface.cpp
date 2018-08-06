@@ -162,27 +162,28 @@ int DataFace::searchVideo(QList<QString> &pathL, QList<float> &fpsL, QList<int> 
     QSqlQuery tmpQuery(db);
 
 
-    // if(!tmpQuery.exec("select videoID,path,fps,frameCount,DATE_FORMAT(saveTime, '%Y-%c-%e %H:%i:%s.%f') as saveTime from video"))
-    if(!tmpQuery.exec("select videoID from video where path='111'"))
+//    if(!tmpQuery.exec("select videoID,path,fps,frameCount,DATE_FORMAT(saveTime, '%Y-%c-%e %H:%i:%s.%f') as saveTime from video"))
+    if(!tmpQuery.exec("select * from video"))
     {
         qDebug() << "查询video表失败！" << tmpQuery.lastError().text();
         return -1;
     }
 
-    int recordNum = tmpQuery.size();
-    if(recordNum <= 0)
-    {
-        qDebug() << "视频记录为空" << tmpQuery.lastQuery();
-        // return recordNum;
-    }
-
+//    int recordNum = tmpQuery.size();
+//    if(recordNum <= 0)
+//    {
+//        qDebug() << "视频记录为空" << tmpQuery.lastQuery();
+//        // return recordNum;
+//    }
+    int recordNum = 0;
     while(tmpQuery.next())
     {
+        recordNum++;
         QString path = tmpQuery.value(1).toString();
         float fps = tmpQuery.value(2).toFloat();
         int frameCount = tmpQuery.value(3).toInt();
         QString saveTimeString = tmpQuery.value(4).toString();
-        QDateTime saveTime = QDateTime::fromString(saveTimeString, "yyyy-MM-dd hh:mm:ss.zzz000");
+        QDateTime saveTime = QDateTime::fromString(saveTimeString, "yyyy-MM-dd hh:mm:ss");
 
         pathL << path;
         fpsL << fps;
@@ -223,16 +224,18 @@ int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &b
         return -1;
     }
 
-    int recordNum = tmpQuery.size();
-    if(recordNum <= 0)
-    {
-        qDebug() << "视频记录为空";
-        results = new std::vector<bbox_t>[frameCount + 1];
-        return recordNum;
-    }
+//    int recordNum = tmpQuery.size();
+//    if(recordNum <= 0)
+//    {
+//        qDebug() << "视频记录为空";
+//        results = new std::vector<bbox_t>[frameCount + 1];
+//        return recordNum;
+//    }
+    int recordNum = 0;
 
     while(tmpQuery.next())
     {
+        recordNum++;
         int frameNow = tmpQuery.value(1).toInt();
         int boxID = tmpQuery.value(2).toInt();
         int objID = tmpQuery.value(3).toInt();
