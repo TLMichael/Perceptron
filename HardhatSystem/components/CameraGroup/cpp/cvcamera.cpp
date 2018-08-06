@@ -182,7 +182,8 @@ void CVCamera::update()
     // precap.~BetterVideoCapture();
     qDebug() << "w: " << w << " h: " << h;
     size = QSize(w, h);
-    fps = precap.getProperty(CV_CAP_PROP_FPS) - 10;
+    fps = precap.getProperty(CV_CAP_PROP_FPS);
+    fps = fps==0 ? 30 : fps;
     qDebug() << "camera fps: " << fps;
     frameNow = 0;
     precap.close();
