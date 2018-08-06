@@ -160,8 +160,10 @@ bool DataFace::deleteVideo(QString path)
 int DataFace::searchVideo(QList<QString> &pathL, QList<float> &fpsL, QList<int> &frameCountL, QList<QDateTime> &saveTimeL)
 {
     QSqlQuery tmpQuery(db);
+
+
     // if(!tmpQuery.exec("select videoID,path,fps,frameCount,DATE_FORMAT(saveTime, '%Y-%c-%e %H:%i:%s.%f') as saveTime from video"))
-    if(!tmpQuery.exec("SELECT * FROM video"))
+    if(!tmpQuery.exec("select videoID from video where path='111'"))
     {
         qDebug() << "查询video表失败！" << tmpQuery.lastError().text();
         return -1;
