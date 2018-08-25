@@ -4,7 +4,7 @@
 #include <QDebug>
 
 //Detector *detector = new Detector("yolov3.cfg", "yolov3.weights");
-Detector *detector = new Detector("yolov3-headhat.cfg", "yolov3-headhat_final.weights");
+Detector *detector = new Detector("yolov3.cfg", "yolov3.weights");
 
 DataFace *df = new DataFace();
 

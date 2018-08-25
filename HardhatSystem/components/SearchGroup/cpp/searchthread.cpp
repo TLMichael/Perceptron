@@ -51,8 +51,9 @@ void SearchTask::doWork()
             cv::Mat tempMat(height, width, CV_8UC3, cameraFrame);
             QThread::msleep((fps == 20) ? fps*2 : fps);
 
-            frameNow = (frameNow + 1) % (int)(camera->getProperty(CV_CAP_PROP_FRAME_COUNT) + 1);
-            qDebug() << "opencv frame: " << frameNow;
+            frameNow = camera->getProperty(cv::CAP_PROP_POS_FRAMES);
+            // frameNow = (frameNow + 1) % (int)(camera->getProperty(CV_CAP_PROP_FRAME_COUNT) + 1);
+            // qDebug() << "opencv frame: " << frameNow;
 
             std::vector<bbox_t> results = df->getResult(frameNow);
 

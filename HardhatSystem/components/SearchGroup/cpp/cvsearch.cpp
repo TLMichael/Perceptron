@@ -25,8 +25,8 @@ void CVSearch::changeParent(QQuickItem* parent)
 
 void CVSearch::videoControl()
 {
-//    qDebug() << "frameCount: " << frameCount;
-//    qDebug() << "frameNow: " << frameNow;
+    //    qDebug() << "frameCount: " << frameCount;
+    //    qDebug() << "frameNow: " << frameNow;
     if(frameCount == frameNow && frameCount > 0)
     {
         frameNow = 0;
@@ -119,6 +119,11 @@ cv::Mat CVSearch::getCvImage()
     return cvImage;
 }
 
+QString CVSearch::getHeatMap()
+{
+    return heatMapString;
+}
+
 int CVSearch::getFrameNow() const
 {
     return frameNow;
@@ -136,7 +141,63 @@ int CVSearch::getNoHatNow() const
 
 void CVSearch::setFrameNow(int f)
 {
-    frameNow = f;
+    frameNow = f - 1;
+    update();
+}
+
+void CVSearch::updateHeatMap()
+{
+    // qFrameNow, qBoxID, qObjID
+    if(frameCount <= 0 )
+        return;
+
+    QVector<int> heatList(frameCount, 0);
+    for(int i = 0; i < qFrameNow.size(); i++)
+    {
+        // qDebug() << qFrameNow[i] << ": " << qBoxID[i] << " " << qObjID[i];
+        if(qObjID[i] == 1)
+        {
+            int idx = qFrameNow[i] - 1;
+            heatList[idx]++;
+        }
+    }
+
+    heatMap = new cv::Mat(frameCount / 10, frameCount, CV_8UC3, cv::Scalar(255, 255, 255));
+
+    for(int i = 0; i < heatList.size(); i++)
+    {
+        if(heatList[i] > 0)
+        {
+            cv::Point start(i, 0);
+            cv::Point end(i, frameCount / 10);
+
+            int x = heatList[i] > 6 ? 6 : heatList[i];
+            int b, g, r;
+            r = 255;
+            b = g = 140 - 36 * x;
+            cv::Scalar color(b, g, r);
+
+            cv::line(*heatMap, start, end, color);
+        }
+    }
+
+    //cv::blur((*heatMap), blur, cv::Size(5, 5));
+    cv::GaussianBlur(*heatMap, *heatMap, cv::Size(5, 5), 0, 0);
+
+    cv::cvtColor((*heatMap), (*heatMap), cv::COLOR_BGR2RGB);
+    qHeatMap = QImage((*heatMap).data, (*heatMap).cols, (*heatMap).rows, int((*heatMap).step), QImage::Format_RGB888);
+
+    // QImage to QString
+    QByteArray bArray;
+    QBuffer buffer(&bArray);
+    buffer.open(QIODevice::WriteOnly);
+    qHeatMap.save(&buffer, "JPEG");
+    heatMapString = "data:image/jpg;base64,";
+    heatMapString.append(QString::fromLatin1(bArray.toBase64().data()));
+
+    emit heatMapChanged();
+    //    for(int i = 0; i < heatList.size(); i++)
+    //        qDebug() << heatList[i];
 }
 
 
@@ -176,6 +237,8 @@ void CVSearch::update()
     fps = precap.getProperty(CV_CAP_PROP_FPS);
     frameNow = 0;
 
+    updateHeatMap();
+
     qDebug() << "Opening video " << fileUrl << ", Size: " << size;
 
     //Destroy old thread, camera accessor and buffers
@@ -183,7 +246,7 @@ void CVSearch::update()
     videoFrame = NULL;
     cvImageBuf = NULL;
 
-//    qDebug() << "Util now, OK";
+    //    qDebug() << "Util now, OK";
     //Create new buffers, camera accessor and thread
     if(exportCvImage)
         allocateCvImage();
@@ -191,13 +254,13 @@ void CVSearch::update()
         allocateVideoFrame();
 
     video = new BetterVideoCapture();
+
     thread = new SearchThread(video, videoFrame, cvImageBuf, size.width(), size.height());
     connect(thread, SIGNAL(imageReady()), this, SLOT(imageReceived()));
 
     //Open newly created device
     try{
         if(video->open(fileUrl)){
-
             // video->setProperty(CV_CAP_PROP_FRAME_WIDTH,size.width());
             // video->setProperty(CV_CAP_PROP_FRAME_HEIGHT,size.height());
             if(videoSurface){

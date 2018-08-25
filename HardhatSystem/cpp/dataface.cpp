@@ -299,7 +299,7 @@ int DataFace::countTotal(int frameNow)
 
 std::vector<bbox_t> DataFace::getResult(int frameNow)
 {
-    qDebug() << "[" << frameNow << "] " << results[frameNow].size();
+    // qDebug() << "[" << frameNow << "] " << results[frameNow].size();
     return results[frameNow];
 }
 

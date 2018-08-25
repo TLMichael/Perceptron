@@ -16,6 +16,7 @@
 #include<QMutex>
 #include<QWaitCondition>
 #include<QVariant>
+#include<QBuffer>
 
 #include<opencv2/highgui/highgui.hpp>
 
@@ -39,6 +40,7 @@ class CVSearch : public QQuickItem
     Q_PROPERTY(QAbstractVideoSurface* videoSurface READ getVideoSurface WRITE setVideoSurface)
     Q_PROPERTY(QSize size READ getSize WRITE setSize NOTIFY sizeChanged)
     Q_PROPERTY(cv::Mat cvImage READ getCvImage NOTIFY cvImageChanged)
+    Q_PROPERTY(QString heatMapString READ getHeatMap NOTIFY heatMapChanged)
 
 public:
     CVSearch(QQuickItem* parent = 0);
@@ -56,6 +58,7 @@ public:
     void setVideoSurface(QAbstractVideoSurface* videoSurface);
 
     cv::Mat getCvImage();
+    QString getHeatMap();
 
 
     int getFrameNow() const;
@@ -63,6 +66,7 @@ public:
     int getNoHatNow() const;
 
     void setFrameNow(int f);
+    void updateHeatMap();
 
 signals:
     void frameNowChanged();
@@ -72,6 +76,7 @@ signals:
     void sizeChanged();
     void fileUrlChanged();
     void cvImageChanged();
+    void heatMapChanged();
 
 private:
     const QVideoFrame::PixelFormat VIDEO_OUTPUT_FORMAT = QVideoFrame::PixelFormat::Format_ARGB32;
@@ -88,6 +93,9 @@ private:
 
     QList<int> qFrameNow, qBoxID, qObjID, qX, qY, qW, qH;  // Database variant
 
+    cv::Mat *heatMap;
+    QImage qHeatMap;
+    QString heatMapString;
 
     BetterVideoCapture* video = NULL;                      ///< The camera object
     SearchThread* thread = NULL;                            ///< Thread to run camera image acquisition

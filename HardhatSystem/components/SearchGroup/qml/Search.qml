@@ -61,12 +61,32 @@ Item {
 
                     // console.log(pastBar.width)
                 }
+
+                onHeatMapChanged:{
+                    console.log(heatMapBar.width)
+                    heatMapBar.source = heatMapString
+                }
             }
 
             VideoOutput {
                 id: out
+                height: 470
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
+                anchors.bottomMargin: 58
                 anchors.fill: parent
                 source: mediaPlayer
+            }
+
+            Image {
+                id: heatMapBar
+                x: 0
+                y: 460
+                width: parent.width
+                height: 45
+                z: 5
+
             }
 
             Rectangle {
@@ -166,6 +186,8 @@ Item {
                 border.width: 5
                 opacity: 0.5
             }
+
+
         }
         MaterialButton {
             id: controlbutton
