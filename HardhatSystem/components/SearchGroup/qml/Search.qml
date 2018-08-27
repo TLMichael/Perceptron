@@ -242,9 +242,7 @@ Item {
             onClicked: {
                 console.log("clicked!...............................................")
                 searchManage.save(mediaPlayer.fileUrl)
-
-
-                txtDialog.show("导出数据", "数据已被存入到：" + mediaPlayer.fileUrl, null, null)
+                txtDialog.show("导出数据", "数据已被存入到：" + searchManage.getTxtName(), null, null)
             }
         }
 

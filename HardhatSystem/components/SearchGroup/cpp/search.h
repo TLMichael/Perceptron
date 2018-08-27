@@ -18,19 +18,21 @@ class Manage: public AbstractTool
     Q_OBJECT
     Q_DISABLE_COPY(Manage)
 
-//    Q_PROPERTY(QString source READ source WRITE setSource)
 
 public:
     Manage() = default;
     ~Manage() = default;
 
     Q_INVOKABLE void save(QString videoName);
+    Q_INVOKABLE QString getTxtName();
 
 //    QString source() const;
 //    void setSouce(const QString &);
 
 public slots:
 
+private:
+    QString txtName;
 
 };
 

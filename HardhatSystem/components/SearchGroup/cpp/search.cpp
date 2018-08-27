@@ -6,7 +6,11 @@ void Search::Manage::save(QString videoName)
 {
 
     int idx = videoName.lastIndexOf(".");
-    QString txtName = videoName.left(idx) + ".txt";
+    txtName = videoName.left(idx) + ".txt";
+    idx = txtName.indexOf("file://");
+    if(idx >= 0)
+        txtName.replace(idx, 7, "");
+
     qDebug() << txtName << "......................";
 
     QFile file(txtName);
@@ -15,8 +19,8 @@ void Search::Manage::save(QString videoName)
     QTextStream out(&file);
 
     QString s1 = "Video File: " + videoName;
-    out << s1 << "\r\n";
-    out << "Detection Results: \r\n\r\n";
+    out << s1 << "\r\n\r\n";
+    out << "Detection Results: \r\n";
 
     out.setFieldWidth(15);
     out.setFieldAlignment(QTextStream::AlignCenter);
@@ -43,4 +47,9 @@ void Search::Manage::save(QString videoName)
 
     file.flush();
     file.close();
+}
+
+QString Search::Manage::getTxtName()
+{
+    return txtName;
 }
