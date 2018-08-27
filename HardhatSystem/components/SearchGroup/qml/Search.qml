@@ -231,6 +231,70 @@ Item {
                 videoView.visible = true
             }
         }
+        MaterialButton {
+            id: txtbutton
+            x: 408
+            y: 532
+            width: 120
+            height: 40
+            text: "导出数据"
+
+            onClicked: {
+                console.log("clicked!...............................................")
+                searchManage.save(mediaPlayer.fileUrl)
+
+
+                txtDialog.show("导出数据", "数据已被存入到：" + mediaPlayer.fileUrl, null, null)
+            }
+        }
+
+        MaterialDialog {
+            id: txtDialog
+            z: 2
+
+            // negativeButtonText: ("取消")
+            positiveButtonText: ("确认")
+
+            property var callbackOnCancel: null
+            property var callbackOnOK: null
+
+            function show(title, message, callbackOnCancel, callbackOnOK) {
+                deleteDia.title = title
+                deleteDia.text = message
+                deleteDia.callbackOnCancel = callbackOnCancel
+                deleteDia.callbackOnOK = callbackOnOK
+                deleteDia.open()
+
+                darkBackground.opacity = 1
+            }
+
+            onAccepted: {
+                darkBackground.opacity = 0;
+
+                if (callbackOnOK)
+                {
+                    callbackOnOK()
+                }
+            }
+
+            onRejected: {
+                darkBackground.opacity = 0;
+
+                if (callbackOnCancel)
+                {
+                    callbackOnCancel()
+                }
+            }
+        }
+
+//        MessageDialog{
+//            id: txtDialog
+//            standardButtons: StandardButton.Yes
+//            modality: Qt.ApplicationModal
+//            title: qsTr("导出数据")
+//            text: qsTr("数据已被存入到：" + mediaPlayer.fileUrl)
+//            onYes: txtDialog.quit();
+//        }
     }
 
     Component {

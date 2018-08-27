@@ -1,4 +1,4 @@
-#include "utils.h"
+﻿#include "utils.h"
 #include <QDesktopServices>
 #include <QDir>
 #include <QDebug>
@@ -10,15 +10,17 @@ DataFace *df = new DataFace();
 
 cv::VideoWriter *videoWriter = new cv::VideoWriter();
 
+QSound *sound = new QSound("beep.wav");
+
 QString getCurrentTime()
 {
-    QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
+    QDateTime time = QDateTime::currentDateTime();
     return time.toString("yyyy-MM-dd-hh-mm-ss");
 }
 
 QString getCurrentTime2()
 {
-    QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
+    QDateTime time = QDateTime::currentDateTime();
     return time.toString("yyyy-MM-dd hh:mm:ss");
 }
 

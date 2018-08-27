@@ -205,7 +205,7 @@ int DataFace::searchDetection(QString path, QList<int> &frameNowL, QList<int> &b
 
     // qDebug() << "查询到记录个数： " << tmpQuery.size();
     int videoID;
-    int frameCount;
+
     if(tmpQuery.next())
     {
         videoID = tmpQuery.value(0).toInt();
@@ -301,6 +301,11 @@ std::vector<bbox_t> DataFace::getResult(int frameNow)
 {
     // qDebug() << "[" << frameNow << "] " << results[frameNow].size();
     return results[frameNow];
+}
+
+int DataFace::getFrameCount()
+{
+    return frameCount;
 }
 
 

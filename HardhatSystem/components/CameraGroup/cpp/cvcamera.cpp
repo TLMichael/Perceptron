@@ -1,4 +1,4 @@
-#include "cvcamera.h"
+﻿#include "cvcamera.h"
 
 CVCamera::CVCamera(QQuickItem *parent) :
     QQuickItem(parent)
@@ -267,7 +267,10 @@ void CVCamera::imageReceived()
                 noHatNow++;
         }
         totalNow = results.size();
-
+        if (noHatNow > 0)
+        {
+            sound->play();
+        }
         emit frameNowChanged();
 
     }

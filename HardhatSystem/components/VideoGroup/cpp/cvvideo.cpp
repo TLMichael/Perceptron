@@ -1,4 +1,4 @@
-#include "cvvideo.h"
+﻿#include "cvvideo.h"
 
 
 CVVideo::CVVideo(QQuickItem *parent) :
@@ -247,6 +247,10 @@ void CVVideo::imageReceived()
                 noHatNow++;
         }
         totalNow = results.size();
+        if (noHatNow > 0)
+        {
+            sound->play();
+        }
 
         if(frameNow == frameCount)
         {

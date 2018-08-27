@@ -26,6 +26,7 @@ public:
     int countNoHat(int frameNow);
     int countTotal(int frameNow);
     std::vector<bbox_t> getResult(int frameNow);
+    int getFrameCount();
 
 
 private:
@@ -36,6 +37,8 @@ private:
 
     QList<int> qFrameNow, qBoxID, qObjID, qX, qY, qW, qH;
     std::vector<bbox_t> *results;
+
+    int frameCount;
 };
 
 #endif // DATAFACE_H

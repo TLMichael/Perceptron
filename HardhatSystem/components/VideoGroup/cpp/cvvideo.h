@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file cvvideo.h
  * @brief Nice QML wrapper for video access with OpenCV
  */
@@ -15,6 +15,7 @@
 #include<QMutex>
 #include<QWaitCondition>
 #include<QVariant>
+#include<QSound>
 
 #include<opencv2/highgui/highgui.hpp>
 
@@ -91,6 +92,7 @@ private:
     int totalNow = 0;
     int noHatNow = 0;
     std::vector<bbox_t> results;
+
 
     QVariantList qFrameNow, qBoxID, qObjID, qX, qY, qW, qH, qProb;  // Database variant
 
