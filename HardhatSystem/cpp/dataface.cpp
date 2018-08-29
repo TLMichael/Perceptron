@@ -12,6 +12,11 @@ DataFace::DataFace()
     open();
 }
 
+DataFace::~DataFace()
+{
+    delete [] results;
+}
+
 bool DataFace::open()
 {
     if (!db.open())

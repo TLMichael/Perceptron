@@ -10,10 +10,10 @@ CVSearch::CVSearch(QQuickItem *parent) :
 
 CVSearch::~CVSearch()
 {
-    if(thread)
-        thread->stop();
-    delete thread;
-    delete video;
+//    if(thread)
+//        thread->stop();
+//    delete thread;
+//    delete video;
     //Video release is automatic when cv::VideoCapture is destroyed
 }
 
@@ -65,13 +65,13 @@ void CVSearch::fileUrlGeted()
         qDebug() << "收到空文件路径";
         clearQVariant();
         delete thread;
-        delete video;
-        if(videoFrame && videoFrame->isMapped())
-            videoFrame->unmap();
-        delete videoFrame;
-        videoFrame = NULL;
-        delete[] cvImageBuf;
-        cvImageBuf = NULL;
+//        delete video;
+//        if(videoFrame && videoFrame->isMapped())
+//            videoFrame->unmap();
+//        delete videoFrame;
+//        videoFrame = nullptr;
+//        delete[] cvImageBuf;
+//        cvImageBuf = nullptr;
 
         return;
     }

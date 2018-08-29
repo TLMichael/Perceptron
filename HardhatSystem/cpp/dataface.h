@@ -15,6 +15,7 @@ class DataFace
 {
 public:
     DataFace();
+    ~DataFace();
     bool open();
     bool insertVideo(QString path, float fps, int frameCount);
     bool insertDetection(QString path, QVariantList qFrameNow, QVariantList qBoxID, \
