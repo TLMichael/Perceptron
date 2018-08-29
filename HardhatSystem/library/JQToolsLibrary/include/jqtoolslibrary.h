@@ -19,7 +19,7 @@
 #include <QObject>
 #include <QPointer>
 
-#define JQTOOLS_VERSIONSTRING "2.0.0"
+#define JQTOOLS_VERSIONSTRING "2.2.0"
 
 class QQmlApplicationEngine;
 

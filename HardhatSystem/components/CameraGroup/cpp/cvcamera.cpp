@@ -269,7 +269,8 @@ void CVCamera::imageReceived()
         totalNow = results.size();
         if (noHatNow > 0)
         {
-            sound->play();
+            if(sound->isFinished())
+                sound->play();
         }
         emit frameNowChanged();
 

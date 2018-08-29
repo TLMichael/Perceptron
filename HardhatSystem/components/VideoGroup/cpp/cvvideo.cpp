@@ -249,7 +249,8 @@ void CVVideo::imageReceived()
         totalNow = results.size();
         if (noHatNow > 0)
         {
-            sound->play();
+            if(sound->isFinished())
+                sound->play();
         }
 
         if(frameNow == frameCount)

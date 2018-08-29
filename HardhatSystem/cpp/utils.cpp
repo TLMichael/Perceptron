@@ -4,7 +4,7 @@
 #include <QDebug>
 
 //Detector *detector = new Detector("yolov3.cfg", "yolov3.weights");
-Detector *detector = new Detector("yolov3.cfg", "yolov3.weights");
+Detector *detector = new Detector("perceptron.cfg", "perceptron.weights");
 
 DataFace *df = new DataFace();
 
