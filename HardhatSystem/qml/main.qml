@@ -17,6 +17,52 @@ ApplicationWindow {
     minimumWidth: 1000
     minimumHeight: 650
 
+
+    onClosing:{
+        close.accepted = false
+        closingDia.show("确认退出", "See you ~", null, null)
+    }
+
+    MaterialDialog {
+        id: closingDia
+        z: 2
+
+        negativeButtonText: ("取消")
+        positiveButtonText: ("确认")
+
+        property var callbackOnCancel: null
+        property var callbackOnOK: null
+
+        function show(title, message, callbackOnCancel, callbackOnOK) {
+            closingDia.title = title
+            closingDia.text = message
+            closingDia.callbackOnCancel = callbackOnCancel
+            closingDia.callbackOnOK = callbackOnOK
+            closingDia.open()
+        }
+
+        onAccepted: {
+            Qt.quit()
+            if (callbackOnOK)
+            {
+                callbackOnOK()
+            }
+        }
+
+        onRejected: {
+            if (callbackOnCancel)
+            {
+                callbackOnCancel()
+            }
+        }
+    }
+
+
+
+
+
+
+
     Component.onCompleted: {
         mainPageContains.showPage( "首页", "qrc:/Welcome/Welcome.qml" );
 
@@ -176,10 +222,10 @@ ApplicationWindow {
                     var buf = bookmarkChildrenItem.get(index);
 
                     secondBookmarkListModel.append( {
-                                                          bookmarkName: buf[ "bookmarkName" ],
-                                                          titleName: buf[ "titleName" ],
-                                                          itemQrcLocation: buf["qrcLocation" ],
-                                                      } );
+                                                       bookmarkName: buf[ "bookmarkName" ],
+                                                       titleName: buf[ "titleName" ],
+                                                       itemQrcLocation: buf["qrcLocation" ],
+                                                   } );
                 }
 
                 secondBookmarkListView.height = bookmarkChildrenItem.count * 42;
@@ -297,11 +343,11 @@ ApplicationWindow {
             for (var index = 0; index < items.length; index++)
             {
                 bookmarkListModel.append( {
-                                                bookmarkName: items[index]["bookmarkName"],
-                                                titleName: items[index]["titleName"],
-                                                itemQrcLocation: items[index]["qrcLocation"],
-                                                bookmarkChildrenItem: items[index]["children"]
-                                            } );
+                                             bookmarkName: items[index]["bookmarkName"],
+                                             titleName: items[index]["titleName"],
+                                             itemQrcLocation: items[index]["qrcLocation"],
+                                             bookmarkChildrenItem: items[index]["children"]
+                                         } );
             }
         }
 
@@ -373,29 +419,29 @@ ApplicationWindow {
             onTriggered: {
                 switch( itemQrcLocation )
                 {
-                    case "": break;
-                    case "notSupport": materialUI.showSnackbarMessage( "此功能暂未开放" ); break;
-                    default:
-                        if ( !( itemQrcLocation in mainPageContains.pages ) )
-                        {
-                            var component = Qt.createComponent( itemQrcLocation );
+                case "": break;
+                case "notSupport": materialUI.showSnackbarMessage( "此功能暂未开放" ); break;
+                default:
+                    if ( !( itemQrcLocation in mainPageContains.pages ) )
+                    {
+                        var component = Qt.createComponent( itemQrcLocation );
 
-                            if (component.status === Component.Ready) {
-                                var page = component.createObject( mainPageContains );
-                                page.anchors.fill = mainPageContains;
-                                mainPageContains.pages[ itemQrcLocation ] = page;
-                            }
+                        if (component.status === Component.Ready) {
+                            var page = component.createObject( mainPageContains );
+                            page.anchors.fill = mainPageContains;
+                            mainPageContains.pages[ itemQrcLocation ] = page;
                         }
+                    }
 
-                        for ( var key in mainPageContains.pages )
-                        {
-                            mainPageContains.pages[ key ].visible = false;
-                        }
+                    for ( var key in mainPageContains.pages )
+                    {
+                        mainPageContains.pages[ key ].visible = false;
+                    }
 
-                        currentItemTitleNameLabel.text = titleName;
-                        mainPageContains.pages[ itemQrcLocation ].visible = true;
+                    currentItemTitleNameLabel.text = titleName;
+                    mainPageContains.pages[ itemQrcLocation ].visible = true;
 
-                        break;
+                    break;
                 }
             }
         }
