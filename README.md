@@ -2,8 +2,6 @@
 
 Hard hat detection system by QT5
 
-[TOC]
-
 ## 界面预览
 
 ![](https://i.imgur.com/QTSsLwo.png)
